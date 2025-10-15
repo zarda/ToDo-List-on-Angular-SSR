@@ -1,8 +1,7 @@
 steps:
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', '$_AR_HOSTNAME/$PROJECT_ID/$_REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA', '.']
-  dir: 'TodoList' # Specifies that the build should run in the TodoList directory
+  args: ['build', '-t', '$_AR_HOSTNAME/$PROJECT_ID/$_REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA', 'TodoList']
 
 # Push the container image to Artifact Registry
 - name: 'gcr.io/cloud-builders/docker'
