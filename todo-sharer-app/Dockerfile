@@ -20,4 +20,4 @@ RUN npm run build
 EXPOSE 8080
 
 # Define the command to run your app
-CMD [ "node", "dist/TodoList/server/server.mjs" ]
+CMD [ "node", "dist/todo-sharer-app/server/server.mjs" ]
