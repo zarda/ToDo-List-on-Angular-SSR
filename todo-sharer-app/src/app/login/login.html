@@ -1,15 +1,8 @@
 <div class="login-container">
-  <form (ngSubmit)="login()">
-    <mat-form-field appearance="fill">
-      <mat-label>Email</mat-label>
-      <input matInput type="email" [(ngModel)]="email" name="email" required>
-    </mat-form-field>
-
-    <mat-form-field appearance="fill">
-      <mat-label>Password</mat-label>
-      <input matInput type="password" [(ngModel)]="password" name="password" required>
-    </mat-form-field>
-
-    <button mat-raised-button color="primary" type="submit">Login</button>
-  </form>
+  <h2>Login to To-Do Sharer</h2>
+  <p>Please sign in to continue</p>
+  <button (click)="loginWithGoogle()">
+    Sign in with Google
+  </button>
+  @if (error()) { <p class="error">{{ error() }}</p> }
 </div>

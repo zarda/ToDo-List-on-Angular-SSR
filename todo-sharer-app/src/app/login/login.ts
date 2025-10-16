@@ -1,30 +1,28 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
-
+import { Component, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { Auth, GoogleAuthProvider, signInWithPopup } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-  ],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
 export class Login {
-  email = '';
-  password = '';
+  private readonly auth: Auth = inject(Auth);
+  private readonly router: Router = inject(Router);
+  protected readonly error = signal<string | null>(null);
 
-  login() {
-    console.log('Email:', this.email);
-    console.log('Password:', this.password);
+  async loginWithGoogle() {
+    this.error.set(null);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(this.auth, provider);
+      // The auth guard will handle redirection upon successful login.
+      // Or you can explicitly navigate:
+      this.router.navigate(['/todos']);
+    } catch (e: any) {
+      this.error.set(e.message);
+    }
   }
 }

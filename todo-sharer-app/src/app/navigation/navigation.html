@@ -1,0 +1,11 @@
+<nav class="navbar">
+  <a class="navbar-brand" routerLink="/">📝 To-Do Sharer</a>
+  <div class="user-info">
+    @if (user(); as currentUser) {
+      <span>Hello, {{ currentUser.displayName }}</span>
+      <button (click)="logout()">Logout</button>
+    } @else {
+      <a routerLink="/login">Login</a>
+    }
+  </div>
+</nav>
