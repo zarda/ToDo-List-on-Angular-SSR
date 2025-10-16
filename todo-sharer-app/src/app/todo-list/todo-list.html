@@ -1,1 +1,59 @@
-<p>todo-list works!</p>
+<div class="todo-container">
+  <div class="list-management">
+    @if (lists().length > 0) {
+      <div class="list-selector">
+        @if (isEditingList()) {
+          <div class="edit-list-form">
+            <input type="text" [(ngModel)]="editingListText" (keyup.enter)="saveEditList()" />
+            <button (click)="saveEditList()">Save</button>
+            <button (click)="cancelEditList()">Cancel</button>
+            <button class="delete-list-btn" (click)="deleteList()">Delete List</button>
+          </div>
+        } @else {
+          <label for="list-select">Current List:</label>
+          <select id="list-select" [ngModel]="selectedListId()" (ngModelChange)="selectedListId.set($event)">
+            @for (list of lists(); track list.id) {
+              <option [value]="list.id">{{ list.name }}</option>
+            }
+          </select>
+          <button (click)="startEditList()">Edit</button>
+        }
+      </div>
+    }
+    <div class="add-list-form">
+      <input type="text" placeholder="New list name..." [(ngModel)]="newListText" (keyup.enter)="addList()">
+      <button (click)="addList()">Create List</button>
+    </div>
+  </div>
+
+  @if (lists().length > 0) {
+    <div class="add-todo-form">
+      <input
+        type="text"
+        placeholder="What needs to be done?"
+        [(ngModel)]="newTodoText"
+        (keyup.enter)="addTodo()"
+      />
+      <button (click)="addTodo()">Add To-Do</button>
+    </div>
+  
+    <ul class="todo-list">
+      @for (todo of todos(); track todo.id) {
+        <li [class.completed]="todo.completed">
+          <input type="checkbox" [checked]="todo.completed" (change)="toggleTodo(todo)" />
+          <span>{{ todo.text }}</span>
+          <button class="delete-btn" (click)="deleteTodo(todo)">×</button>
+        </li>
+      } @empty {
+        @if (selectedListId()) {
+          <p class="empty-state">No to-dos yet. Add one above!</p>
+        }
+      }
+    </ul>
+  } @else {
+    <div class="empty-state">
+      <h2>Welcome!</h2>
+      <p>Create your first to-do list to get started.</p>
+    </div>
+  }
+</div>
