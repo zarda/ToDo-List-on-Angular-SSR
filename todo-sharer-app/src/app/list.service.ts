@@ -10,9 +10,10 @@ import {
   query,
   where,
 } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
-import { List } from './list';
+import { Observable, of } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 import { TodoService } from './todo.service';
+import { List } from './list';
 
 @Injectable({
   providedIn: 'root',
@@ -21,10 +22,16 @@ export class ListService {
   private readonly firestore: Firestore = inject(Firestore);
   private readonly todoService = inject(TodoService);
 
-  getLists(userId: string): Observable<List[]> {
+  getLists(userId: string | undefined): Observable<{ loading: boolean; data: List[] }> {
+    if (!userId) {
+      return of({ loading: false, data: [] });
+    }
     const listsCollection = collection(this.firestore, 'lists');
-    const q = query(listsCollection, where('ownerUid', '==', userId));
-    return collectionData(q, { idField: 'id' }) as Observable<List[]>;
+    const q = query(listsCollection, where('ownerUid', '==', userId)) as any;
+    return collectionData<List>(q, { idField: 'id' }).pipe(
+      map(data => ({ loading: false, data })),
+      startWith({ loading: true, data: [] })
+    );
   }
 
   async addList(userId: string, name:string): Promise<string> {

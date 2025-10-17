@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 import { Auth, user } from '@angular/fire/auth';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -24,12 +24,12 @@ export class TodoList {
   private readonly user = toSignal(user(this.auth));
 
   // List management signals
-  private readonly lists$ = toObservable(this.user).pipe(
+  private readonly listsResult = toSignal(toObservable(this.user).pipe(
     switchMap(user =>
-      user ? this.listService.getLists(user.uid) : of([] as List[])
+      user ? this.listService.getLists(user.uid) : of({ loading: false, data: [] as List[] })
     )
-  );
-  protected readonly lists = toSignal(this.lists$, { initialValue: [] as List[] });
+  ), { initialValue: { loading: true, data: [] as List[] } });
+  protected readonly lists = computed(() => this.listsResult().data);
   protected readonly selectedListId = signal<string | null>(null);
   protected readonly newListText = signal('');
   protected readonly isEditingList = signal(false);
@@ -37,15 +37,11 @@ export class TodoList {
 
   // Todo management signals
   protected readonly newTodoText = signal('');
-  private readonly todos$ = toObservable(this.selectedListId).pipe(
-    switchMap(listId => {
-      if (!listId) {
-        return of({ loading: false, data: [] as Todo[] });
-      }
-      return this.todoService.getTodos(listId);
-    })
+  private readonly todosResult = toSignal(
+    toObservable(this.selectedListId).pipe(
+      switchMap(listId => listId ? this.todoService.getTodos(listId) : of({ loading: false, data: [] as Todo[] }))
+    ), { initialValue: { loading: true, data: [] as Todo[] } }
   );
-  private readonly todosResult = toSignal(this.todos$, { initialValue: { loading: true, data: [] as Todo[] } });
 
   protected readonly todos = computed(() => {
     const result = this.todosResult();
