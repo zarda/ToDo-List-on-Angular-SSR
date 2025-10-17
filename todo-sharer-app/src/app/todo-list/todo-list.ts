@@ -5,6 +5,15 @@ import { Auth, user } from '@angular/fire/auth';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 import { TodoService } from '../todo.service';
 import { Todo } from '../todo';
 import { ListService } from '../list.service';
@@ -13,7 +22,17 @@ import { List } from '../list';
 @Component({
   selector: 'app-todo-list',
   standalone: true,
-  imports: [FormsModule],
+  imports: [
+    FormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatIconModule,
+    MatListModule,
+    MatCheckboxModule,
+  ],
   templateUrl: './todo-list.html',
   styleUrls: ['./todo-list.scss'],
 })
@@ -21,7 +40,7 @@ export class TodoList {
   private readonly todoService = inject(TodoService);
   private readonly listService = inject(ListService);
   private readonly auth: Auth = inject(Auth);
-  private readonly user = toSignal(user(this.auth));
+  protected readonly user = toSignal(user(this.auth));
 
   // List management signals
   private readonly listsResult = toSignal(toObservable(this.user).pipe(

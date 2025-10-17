@@ -1,59 +1,83 @@
-<div class="todo-container">
+<mat-card class="todo-container">
+  <mat-card-header>
+    <mat-card-title>
+      @if (user()?.displayName) {
+        {{ user()?.displayName }}'s To-Do Lists
+      } @else {
+        My To-Do Lists
+      }
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
   <div class="list-management">
     @if (lists().length > 0) {
       <div class="list-selector">
         @if (isEditingList()) {
           <div class="edit-list-form">
-            <input type="text" [(ngModel)]="editingListText" (keyup.enter)="saveEditList()" />
-            <button (click)="saveEditList()">Save</button>
-            <button (click)="cancelEditList()">Cancel</button>
-            <button class="delete-list-btn" (click)="deleteList()">Delete List</button>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Edit list name</mat-label>
+              <input matInput [(ngModel)]="editingListText" (keyup.enter)="saveEditList()" />
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="saveEditList()">Save</button>
+            <button mat-stroked-button (click)="cancelEditList()">Cancel</button>
+            <button mat-stroked-button color="warn" (click)="deleteList()">Delete List</button>
           </div>
         } @else {
-          <label for="list-select">Current List:</label>
-          <select id="list-select" [ngModel]="selectedListId()" (ngModelChange)="selectedListId.set($event)">
-            @for (list of lists(); track list.id) {
-              <option [value]="list.id">{{ list.name }}</option>
-            }
-          </select>
-          <button (click)="startEditList()">Edit</button>
+          <mat-form-field appearance="outline">
+            <mat-label>Current List</mat-label>
+            <mat-select [ngModel]="selectedListId()" (ngModelChange)="selectedListId.set($event)">
+              @for (list of lists(); track list.id) {
+                <mat-option [value]="list.id">{{ list.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button mat-icon-button (click)="startEditList()" aria-label="Edit list name">
+            <mat-icon>edit</mat-icon>
+          </button>
         }
       </div>
     }
     <div class="add-list-form">
-      <input type="text" placeholder="New list name..." [(ngModel)]="newListText" (keyup.enter)="addList()">
-      <button (click)="addList()">Create List</button>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>New list name...</mat-label>
+        <input matInput [(ngModel)]="newListText" (keyup.enter)="addList()">
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="addList()">Create List</button>
     </div>
   </div>
 
   @if (lists().length > 0) {
     <div class="add-todo-form">
-      <input
-        type="text"
-        placeholder="What needs to be done?"
-        [(ngModel)]="newTodoText"
-        (keyup.enter)="addTodo()"
-      />
-      <button (click)="addTodo()">Add To-Do</button>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>What needs to be done?</mat-label>
+        <input matInput [(ngModel)]="newTodoText" (keyup.enter)="addTodo()" />
+      </mat-form-field>
+      <button mat-raised-button color="accent" (click)="addTodo()">Add To-Do</button>
     </div>
   
-    <ul class="todo-list">
+    <mat-list role="list">
       @for (todo of todos(); track todo.id) {
-        <li [class.completed]="todo.completed">
-          <input type="checkbox" [checked]="todo.completed" (change)="toggleTodo(todo)" />
+        <mat-list-item role="listitem" [class.completed]="todo.completed">
+          <mat-checkbox [checked]="todo.completed" (change)="toggleTodo(todo)" class="todo-checkbox"></mat-checkbox>
           <span>{{ todo.text }}</span>
-          <button class="delete-btn" (click)="deleteTodo(todo)">×</button>
-        </li>
+          <span class="spacer"></span>
+          <button mat-icon-button color="warn" (click)="deleteTodo(todo)" aria-label="Delete to-do">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-list-item>
       } @empty {
         @if (selectedListId()) {
-          <p class="empty-state">No to-dos yet. Add one above!</p>
+          <div class="empty-state">
+            <p>No to-dos yet. Add one above!</p>
+          </div>
         }
       }
-    </ul>
+    </mat-list>
   } @else {
     <div class="empty-state">
       <h2>Welcome!</h2>
       <p>Create your first to-do list to get started.</p>
     </div>
   }
-</div>
+  </mat-card-content>
+</mat-card>
