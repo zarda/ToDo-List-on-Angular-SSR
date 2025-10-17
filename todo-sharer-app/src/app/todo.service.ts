@@ -4,6 +4,7 @@ import {
   collection,
   collectionData,
   DocumentReference,
+  CollectionReference,
   addDoc,
   doc,
   updateDoc,
@@ -11,7 +12,7 @@ import {
   getDocs,
   writeBatch,
 } from '@angular/fire/firestore';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { Todo } from './todo';
 
@@ -22,22 +23,22 @@ export class TodoService {
   private readonly firestore: Firestore = inject(Firestore);
 
   getTodos(listId: string): Observable<{ loading: boolean, data: Todo[] }> {
-    const todosCollection = collection(
+    const todosCollection = collection( // Specify the type of the collection
       this.firestore,
       `lists/${listId}/todos`
-    );
-    return (collectionData(todosCollection, { idField: 'id' }) as Observable<Todo[]>).pipe(
+    ) as CollectionReference<Todo>;
+    return collectionData<Todo>(todosCollection, { idField: 'id' }).pipe(
       map(data => ({ loading: false, data })),
       startWith({ loading: true, data: [] })
     );
   }
 
   async addTodo(listId: string, text: string): Promise<DocumentReference> {
-    const todosCollection = collection(
+    const todosCollection = collection( // Specify the type of the collection
       this.firestore,
       `lists/${listId}/todos`
-    );
-    return await addDoc(todosCollection, { text, completed: false });
+    ) as CollectionReference<Omit<Todo, 'id'>>;
+    return await addDoc(todosCollection, { text, completed: false } as Omit<Todo, 'id'>);
   }
 
   async updateTodo(listId: string, todo: Todo): Promise<void> {
