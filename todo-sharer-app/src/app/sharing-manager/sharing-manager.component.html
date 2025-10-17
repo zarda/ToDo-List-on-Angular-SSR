@@ -1,0 +1,51 @@
+@if (store.selectedList(); as list) {
+  <div class="sharing-info">
+    <span class="sharing-label">Members:</span>
+    <div class="member-chips">
+      <mat-chip-set>
+        <!-- Owner Chip -->
+        <mat-chip [highlighted]="true">
+          <img matChipAvatar [src]="list.ownerPhotoURL || 'assets/default-avatar.png'" alt="Owner avatar" />
+          {{ list.ownerEmail }}
+          <mat-icon matChipTrailingIcon>star</mat-icon>
+        </mat-chip>
+        <!-- Collaborator Chips -->
+        @for(collaborator of list.collaborators; track collaborator.uid) { @if(collaborator.email) {
+          <mat-chip
+            [removable]="list.ownerUid === store.currentUser()?.uid && store.unsharingEmail() !== collaborator.email"
+            [disabled]="store.unsharingEmail() === collaborator.email"
+            (removed)="store.unshareList(collaborator.email!)">
+            <img matChipAvatar [src]="collaborator.photoURL || 'assets/default-avatar.png'" alt="Collaborator avatar" />
+            {{ collaborator.email }}
+            @if (store.unsharingEmail() === collaborator.email) {
+              <mat-progress-spinner matChipTrailingIcon diameter="16"></mat-progress-spinner>
+            } @else if (list.ownerUid === store.currentUser()?.uid) {
+              <mat-icon matChipRemove>cancel</mat-icon>
+            }
+          </mat-chip>
+        }}
+      </mat-chip-set>
+    </div>
+    <!-- Share button and form -->
+    @if(list.ownerUid === store.currentUser()?.uid) {
+      @if (store.isSharing()) {
+        <div class="share-form">
+          <mat-form-field appearance="outline" class="share-input">
+            <mat-label>Email to share with</mat-label>
+            <input matInput [ngModel]="store.shareEmail()" (ngModelChange)="store.setShareEmail($event)" (keyup.enter)="store.shareList()" [disabled]="store.isSharingList()" />
+          </mat-form-field>
+          <button mat-icon-button color="primary" (click)="store.shareList()" [disabled]="store.isSharingList() || !store.shareEmail()">
+            @if(store.isSharingList()) { <mat-spinner diameter="20"></mat-spinner> } @else { <mat-icon>send</mat-icon> }
+          </button>
+          <button mat-icon-button (click)="store.cancelSharing()" [disabled]="store.isSharingList()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      } @else {
+        <button mat-stroked-button (click)="store.startSharing()">
+          <mat-icon>person_add</mat-icon> Share
+        </button>
+      }
+    }
+  </div>
+}

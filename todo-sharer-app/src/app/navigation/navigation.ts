@@ -1,23 +1,30 @@
 import { Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Router, RouterLink } from '@angular/router';
-import { Auth, user, signOut } from '@angular/fire/auth';
+import { CommonModule } from '@angular/common';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [RouterLink],
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    RouterLink,
+  ],
   templateUrl: './navigation.html',
   styleUrls: ['./navigation.scss'],
 })
 export class Navigation {
-  private readonly auth: Auth = inject(Auth);
-  private readonly router: Router = inject(Router);
+  protected readonly authService = inject(AuthService);
 
-  readonly user = toSignal(user(this.auth));
-
-  async logout(): Promise<void> {
-    await signOut(this.auth);
-    await this.router.navigate(['/login']);
+  logout() {
+    this.authService.logout();
   }
 }

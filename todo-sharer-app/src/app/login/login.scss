@@ -1,25 +1,20 @@
-:host {
+.login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: calc(100vh - 64px); // Full height minus toolbar
+  text-align: center;
 }
 
-.login-container {
-  display: flex;
-  flex-direction: column;
+.error-footer {
+  padding: 8px 16px;
+  background-color: #f44336; // Material Red
+  color: white;
+  font-weight: 500;
+}
+
+.button-content {
+  display: inline-flex;
   align-items: center;
-  padding: 2rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-}
-
-button {
-  margin-top: 1rem;
-}
-
-.error {
-  color: red;
-  margin-top: 1rem;
+  gap: 8px;
 }

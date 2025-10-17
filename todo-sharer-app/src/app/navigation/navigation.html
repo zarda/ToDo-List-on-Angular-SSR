@@ -1,11 +1,23 @@
-<nav class="navbar">
-  <a class="navbar-brand" routerLink="/">📝 To-Do Sharer</a>
-  <div class="user-info">
-    @if (user(); as currentUser) {
-      <span>Hello, {{ currentUser.displayName }}</span>
-      <button (click)="logout()">Logout</button>
-    } @else {
-      <a routerLink="/login">Login</a>
-    }
-  </div>
-</nav>
+<mat-toolbar color="primary">
+  <span>To-Do Sharer</span>
+  <span class="spacer"></span>
+
+  @if (authService.currentUser(); as currentUser) {
+    <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-button">
+      <img class="avatar" [src]="currentUser.photoURL || 'assets/default-avatar.png'" alt="User avatar">
+      <span class="user-name">{{ currentUser.displayName }}</span>
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  } @else {
+    <button mat-flat-button routerLink="/login">
+      <mat-icon>login</mat-icon>
+      <span>Login with Google</span>
+    </button>
+  }
+</mat-toolbar>

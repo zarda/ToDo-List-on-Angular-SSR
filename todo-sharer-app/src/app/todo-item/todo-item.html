@@ -1,0 +1,29 @@
+<div class="todo-item-container">
+  @if (store.editingTodoId() === todo.id) {
+    <!-- Edit Mode -->
+    <mat-form-field appearance="outline" class="edit-input">
+      <input matInput [ngModel]="store.editingTodoText()" (ngModelChange)="store.setEditingTodoText($event)" (keyup.enter)="saveEdit()" (keyup.escape)="cancelEdit()" cdkFocusInitial />
+    </mat-form-field>
+    <div class="todo-actions">
+      <button mat-icon-button color="primary" (click)="saveEdit()" matTooltip="Save changes">
+        <mat-icon>check</mat-icon>
+      </button>
+      <button mat-icon-button (click)="cancelEdit()" matTooltip="Cancel edit">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  } @else {
+    <!-- View Mode -->
+    <mat-checkbox [checked]="todo.completed" (change)="toggleCompletion()" class="todo-checkbox">
+      <span class="todo-text">{{ todo.text }}</span>
+    </mat-checkbox>
+    <div class="todo-actions">
+      <button mat-icon-button (click)="startEditing()" matTooltip="Edit to-do">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="deleteTodo()" matTooltip="Delete to-do">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  }
+</div>

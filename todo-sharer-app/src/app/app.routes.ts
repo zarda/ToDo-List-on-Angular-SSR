@@ -1,10 +1,21 @@
 import { Routes } from '@angular/router';
-import { Login } from './login/login';
-import { TodoList } from './todo-list/todo-list';
 import { authGuard } from './auth.guard';
+import { TodoStore } from './todo-list/todo.store';
 
 export const routes: Routes = [
-  { path: 'login', component: Login },
-  { path: 'todos', component: TodoList, canActivate: [authGuard] },
-  { path: '', redirectTo: '/todos', pathMatch: 'full' }
+  {
+    path: '',
+    // Lazy load the TodoListComponent
+    loadComponent: () =>
+      import('./todo-list/todo-list.component').then(
+        (m) => m.TodoListComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'login',
+    // Lazy load the LoginComponent
+    loadComponent: () =>
+      import('./login/login').then((m) => m.Login),
+  },
 ];

@@ -1,0 +1,26 @@
+<div class="todo-item-content">
+  @if (isEditing) {
+    <form (ngSubmit)="editSaved.emit()" class="edit-form">
+      <mat-form-field appearance="outline" class="edit-input">
+        <input
+          matInput
+          [ngModel]="editingText"
+          (ngModelChange)="editTextChanged.emit($event)"
+          (keyup.escape)="editCancelled.emit()"
+          cdkFocusInitial
+          name="editingTodo"
+        />
+      </mat-form-field>
+      <button mat-icon-button color="primary" type="submit" aria-label="Save edit">
+        <mat-icon>save</mat-icon>
+      </button>
+    </form>
+    <button mat-icon-button (click)="editCancelled.emit()" aria-label="Cancel edit">
+      <mat-icon>cancel</mat-icon>
+    </button>
+  } @else {
+    <mat-checkbox [checked]="todo.completed" (change)="completionToggled.emit($event.checked)" class="todo-checkbox">{{ todo.text }}</mat-checkbox>
+    <button mat-icon-button (click)="editStarted.emit()" aria-label="Edit to-do"><mat-icon>edit</mat-icon></button>
+    <button mat-icon-button color="warn" (click)="deleted.emit()" aria-label="Delete to-do"><mat-icon>delete</mat-icon></button>
+  }
+</div>

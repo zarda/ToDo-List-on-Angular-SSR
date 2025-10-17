@@ -1,0 +1,38 @@
+.list-manager-container {
+  margin-bottom: 24px;
+}
+
+.list-controls {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.list-search {
+  flex-grow: 1;
+}
+
+.list-actions {
+  padding-top: 8px; // Align with form field content
+}
+
+.add-list-form,
+.edit-list-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.full-width {
+  flex-grow: 1;
+}
+
+mat-selection-list {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
