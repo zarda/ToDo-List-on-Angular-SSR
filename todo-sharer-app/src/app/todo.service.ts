@@ -1,20 +1,25 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   Firestore,
   collection,
   collectionData,
-  DocumentReference,
-  CollectionReference,
-  addDoc,
   doc,
+  addDoc,
   updateDoc,
   deleteDoc,
+  query,
+  orderBy,
   getDocs,
   writeBatch,
+  serverTimestamp,
+  Query,
+  QueryOrderByConstraint,
+  QueryCompositeFilterConstraint,
+  CollectionReference,
 } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { Todo } from './todo';
+import { Todo, TodoCreate } from './models/todo.model';
 
 @Injectable({
   providedIn: 'root',
@@ -22,30 +27,34 @@ import { Todo } from './todo';
 export class TodoService {
   private readonly firestore: Firestore = inject(Firestore);
 
-  getTodos(listId: string): Observable<{ loading: boolean, data: Todo[] }> {
-    const todosCollection = collection( // Specify the type of the collection
-      this.firestore,
-      `lists/${listId}/todos`
-    ) as CollectionReference<Todo>;
-    return collectionData<Todo>(todosCollection, { idField: 'id' }).pipe(
-      map(data => ({ loading: false, data })),
-      startWith({ loading: true, data: [] })
+  getTodos(listId: string, sortBy: 'order' | 'dueDate' | 'createdAt', direction: 'asc' | 'desc'): Observable<{ loading: boolean, data: Todo[] }> {
+    if (!listId) {
+      return of({ loading: false, data: [] });
+    }
+    const todosCollection = collection(this.firestore, `lists/${listId}/todos`) as CollectionReference<Todo>;
+    const q = query(todosCollection, orderBy(sortBy, direction));
+    return collectionData<Todo, 'id'>(q, { idField: 'id' }).pipe(
+      map(todos => ({ loading: false, data: todos })),
+      startWith({ loading: true, data: [] as Todo[] })
     );
   }
 
-  async addTodo(listId: string, text: string): Promise<DocumentReference> {
-    const todosCollection = collection( // Specify the type of the collection
-      this.firestore,
-      `lists/${listId}/todos`
-    ) as CollectionReference<Omit<Todo, 'id'>>;
-    return await addDoc(todosCollection, { text, completed: false } as Omit<Todo, 'id'>);
+  async addTodo(listId: string, text: string): Promise<string> {
+    const todosCollection = collection(this.firestore, `lists/${listId}/todos`) as CollectionReference<Todo>;
+    const newTodo: TodoCreate = {
+      text,
+      completed: false,
+      createdAt: serverTimestamp(),
+      updatedAt: null,
+      order: Date.now(), // Simple initial order
+      dueDate: null,
+    };
+    const docRef = await addDoc(todosCollection, newTodo);
+    return docRef.id;
   }
 
-  async updateTodo(listId: string, todo: Todo): Promise<void> {
-    const todoDoc = doc(
-      this.firestore,
-      `lists/${listId}/todos/${todo.id}`
-    );
+  async updateTodo(listId: string, todo: Partial<Todo> & { id: string }): Promise<void> {
+    const todoDoc = doc(this.firestore, `lists/${listId}/todos/${todo.id}`);
     const { id, ...data } = todo;
     await updateDoc(todoDoc, data);
   }
@@ -55,14 +64,32 @@ export class TodoService {
     await deleteDoc(todoDoc);
   }
 
+  async updateTodos(listId: string, updates: Array<Partial<Todo> & { id: string }>): Promise<void> {
+    const batch = writeBatch(this.firestore);
+    updates.forEach(update => {
+      const todoDoc = doc(this.firestore, `lists/${listId}/todos/${update.id}`);
+      const { id, ...data } = update;
+      batch.update(todoDoc, data);
+    });
+    await batch.commit();
+  }
+
   async deleteAllTodos(listId: string): Promise<void> {
-    const todosCollection = collection(
-      this.firestore,
-      `lists/${listId}/todos`
-    );
+    const todosCollection = collection(this.firestore, `lists/${listId}/todos`) as CollectionReference<Todo>;
     const todosSnapshot = await getDocs(todosCollection);
     const batch = writeBatch(this.firestore);
-    todosSnapshot.forEach(todoDoc => batch.delete(todoDoc.ref));
+    todosSnapshot.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
+  }
+
+  async deleteTodos(listId: string, todoIds: string[]): Promise<void> {
+    const batch = writeBatch(this.firestore);
+    todoIds.forEach(id => {
+      const todoDoc = doc(this.firestore, `lists/${listId}/todos/${id}`);
+      batch.delete(todoDoc);
+    });
     await batch.commit();
   }
 }

@@ -1,0 +1,36 @@
+<div class="controls-container">
+  <mat-form-field appearance="outline" class="todo-search">
+    <mat-label>Search To-Dos</mat-label>
+    <input matInput [ngModel]="store.searchTerm()" (ngModelChange)="store.setSearchTerm($event)" />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <div class="action-buttons">
+    <button mat-stroked-button color="warn" (click)="store.clearCompleted()" [disabled]="!store.hasCompletedTodos()" matTooltip="Permanently delete all completed to-dos">
+      <mat-icon>delete_sweep</mat-icon> Clear Completed
+    </button>
+
+    <mat-button-toggle [checked]="store.hideCompleted()" (change)="store.setHideCompleted($event.source.checked)" matTooltip="Hide completed to-dos">
+      @if (store.hideCompleted()) {
+        <mat-icon>visibility</mat-icon>
+      } @else {
+        <mat-icon>visibility_off</mat-icon>
+      }
+    </mat-button-toggle>
+
+    <mat-button-toggle-group class="sort-controls"
+      [value]="store.sortBy()"
+      (valueChange)="store.setSortBy($event)"
+      aria-label="Sort by">
+      <mat-button-toggle value="order" matTooltip="Sort manually (drag & drop)">
+        <mat-icon>drag_handle</mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle value="createdAt" matTooltip="Sort by creation date">
+        <mat-icon>date_range</mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle value="dueDate" matTooltip="Sort by due date">
+        <mat-icon>event</mat-icon>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+</div>

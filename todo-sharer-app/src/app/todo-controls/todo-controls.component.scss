@@ -1,0 +1,20 @@
+.controls-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 8px;
+  border-bottom: 1px solid var(--mat-divider-color);
+}
+
+.todo-count {
+  font-size: 0.9rem;
+  color: var(--mat-sys-on-surface-variant);
+  flex-shrink: 0; // Prevents the count from shrinking on small screens
+}
+
+// Push the clear button to the end
+.mat-stroked-button {
+  margin-left: auto;
+}

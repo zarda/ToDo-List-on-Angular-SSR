@@ -1,28 +1,55 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { Auth, GoogleAuthProvider, signInWithPopup } from '@angular/fire/auth';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './login.html',
-  styleUrl: './login.scss'
+  styleUrls: ['./login.scss'],
 })
 export class Login {
-  private readonly auth: Auth = inject(Auth);
+  protected readonly authService = inject(AuthService);
   private readonly router: Router = inject(Router);
   protected readonly error = signal<string | null>(null);
+  readonly loading = signal(false);
 
-  async loginWithGoogle() {
+  constructor() {
+    // If the user is already logged in, redirect them away from the login page.
+    effect(() => {
+      if (this.authService.currentUser()) {
+        this.router.navigate(['/']);
+      }
+    });
+  }
+
+  async login(): Promise<void> {
+    if (this.loading()) return;
     this.error.set(null);
+    this.loading.set(true);
+
     try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(this.auth, provider);
-      // The auth guard will handle redirection upon successful login.
-      // Or you can explicitly navigate:
-      this.router.navigate(['/todos']);
+      await this.authService.loginWithGoogle();
     } catch (e: any) {
-      this.error.set(e.message);
+      const message =
+        e.code === 'auth/popup-closed-by-user'
+          ? 'Login was cancelled.'
+          : 'Login failed. Please check console for details.';
+      this.error.set(message);
+    } finally {
+      this.loading.set(false);
     }
   }
 }

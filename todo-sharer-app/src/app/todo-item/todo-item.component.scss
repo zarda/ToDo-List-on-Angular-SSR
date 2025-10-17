@@ -1,0 +1,74 @@
+// Base styles for the list item content
+:host {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.view, .edit-view {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 1rem;
+  padding: 8px 0;
+}
+
+.todo-text {
+  flex-grow: 1;
+  cursor: text;
+}
+
+.todo-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.due-date {
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface-variant);
+  white-space: nowrap;
+
+  &.overdue {
+    background-color: var(--mat-sys-tertiary-container);
+    color: var(--mat-sys-on-tertiary-container);
+  }
+}
+
+.updated-date {
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant);
+  .mat-icon {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+// The datepicker input is only a trigger, so we hide it.
+.hidden-datepicker {
+  width: 0;
+  height: 0;
+  border: none;
+  padding: 0;
+  position: absolute;
+  opacity: 0;
+}
+
+.edit-input {
+  flex-grow: 1;
+  // Remove extra space below the form field in edit mode
+  .mdc-form-field {
+    padding-bottom: 0;
+  }
+}
+
+.drag-handle {
+  cursor: move;
+  color: var(--mat-sys-on-surface-variant);
+}

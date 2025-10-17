@@ -1,0 +1,57 @@
+<div class="list-manager-container">
+  <div class="list-controls">
+    <mat-form-field appearance="outline" class="list-search">
+      <mat-label>Search Lists</mat-label>
+      <input matInput [ngModel]="store.listSearchTerm()" (ngModelChange)="store.setListSearchTerm($event)" />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    @if (store.selectedListId() && !store.isEditingList()) {
+      <div class="list-actions">
+        <button mat-icon-button (click)="store.startEditList()" matTooltip="Edit list name">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="store.deleteList()" [disabled]="store.isDeletingList()" matTooltip="Delete list">
+          @if (store.isDeletingList()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            <mat-icon>delete</mat-icon>
+          }
+        </button>
+      </div>
+    }
+  </div>
+
+  @if (store.isEditingList()) {
+    <div class="edit-list-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Edit list name</mat-label>
+        <input matInput [ngModel]="store.editingListText()" (ngModelChange)="store.setEditingListText($event)" (keyup.enter)="store.saveEditList()" />
+      </mat-form-field>
+      <button mat-icon-button color="primary" (click)="store.saveEditList()" [disabled]="store.isSavingList()">
+        @if (store.isSavingList()) { <mat-spinner diameter="20"></mat-spinner> } @else { <mat-icon>save</mat-icon> }
+      </button>
+      <button mat-icon-button (click)="store.cancelEditList()">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </div>
+  }
+
+  <mat-selection-list #listSelector [multiple]="false" (selectionChange)="store.setSelectedListId($event.options[0].value)">
+    @for (list of store.filteredLists(); track list.id) {
+      <mat-list-option [value]="list.id" [selected]="list.id === store.selectedListId()">
+        {{ list.name }}
+      </mat-list-option>
+    }
+  </mat-selection-list>
+
+  <div class="add-list-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>New list name</mat-label>
+      <input matInput [ngModel]="store.newListText()" (ngModelChange)="store.setNewListText($event)" (keyup.enter)="store.addList()" [disabled]="store.isAddingList()" />
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="store.addList()" [disabled]="store.isAddingList()">
+      @if (store.isAddingList()) { <mat-spinner diameter="20"></mat-spinner> } @else { Add List }
+    </button>
+  </div>
+</div>

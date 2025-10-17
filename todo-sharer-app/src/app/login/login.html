@@ -1,8 +1,21 @@
 <div class="login-container">
-  <h2>Login to To-Do Sharer</h2>
-  <p>Please sign in to continue</p>
-  <button (click)="loginWithGoogle()">
-    Sign in with Google
-  </button>
-  @if (error()) { <p class="error">{{ error() }}</p> }
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Welcome to To-Do Sharer</mat-card-title>
+      <mat-card-subtitle>Please log in to continue</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <button mat-raised-button color="primary" (click)="login()" [disabled]="loading()">
+        <span [hidden]="!loading()">
+          <mat-spinner diameter="20" />
+        </span>
+        <span [hidden]="loading()" class="button-content">
+          <mat-icon>login</mat-icon><span>Login with Google</span>
+        </span>
+      </button>
+    </mat-card-content>
+    @if (error(); as errorMessage) {
+      <mat-card-footer class="error-footer">{{ errorMessage }}</mat-card-footer>
+    }
+  </mat-card>
 </div>
