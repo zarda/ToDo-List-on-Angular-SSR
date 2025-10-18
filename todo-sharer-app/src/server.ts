@@ -29,7 +29,7 @@ app.use((req, res, next) => {
  */
 if (isMainModule(import.meta.url) || process.env['pm_id']) {
   // Use the PORT from the environment (injected by Cloud Run) or default to 8080 for local development.
-  const port = process.env['PORT'];
+  const port = process.env['PORT'] || 8080;
   app.listen(port, () => {
     console.log(`Node Express server listening on http://localhost:${port}`);
   });
