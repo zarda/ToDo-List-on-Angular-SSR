@@ -37,7 +37,7 @@
             "prerender": true,
             "ssr": {
               "entry": "src/server.ts",
-              "experimentalPlatform": "node"
+              "experimentalPlatform": "neutral"
             }
           },
           "configurations": {
