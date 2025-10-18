@@ -16,5 +16,8 @@ COPY . .
 # Build the app
 RUN npm run build
 
+# Expose port 8080 to allow communication with the app
+EXPOSE 8080
+
 # Define the command to run your app
 CMD node dist/todo-sharer-app/server/server.mjs
