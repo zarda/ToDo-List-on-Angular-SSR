@@ -3,29 +3,77 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Users can read and write their own user document.
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+    // --- Functions ---
+    // Checks if a user is authenticated.
+    function isSignedIn() {
+      return request.auth != null;
     }
 
-    // Rules for the 'lists' collection
+    // Checks if the requesting user is the owner of a given list.
+    function isListOwner(listId) {
+      return get(/databases/$(database)/documents/lists/$(listId)).data.ownerUid == request.auth.uid;
+    }
+
+    // Checks if the requesting user is a member (owner or collaborator) of a given list.
+    function isListMember(listId) {
+      let list = get(/databases/$(database)/documents/lists/$(listId));
+      return isSignedIn() && (
+        list.data.ownerUid == request.auth.uid ||
+        request.auth.token.email in list.data.sharedWith
+      );
+    }
+
+    // --- Collections ---
+    match /users/{userId} {
+      // Any authenticated user can read public profile data.
+      allow read: if isSignedIn();
+
+      // A user can only write to their own profile.
+      allow write: if request.auth.uid == userId;
+    }
+
     match /lists/{listId} {
-      // A user can read a list if they are the owner or if it's shared with them.
-      allow read: if request.auth != null && 
-                    (resource.data.ownerUid == request.auth.uid || request.auth.token.email in resource.data.sharedWith);
+      // A user can read a list document if they are the owner or a collaborator.
+      // This rule is primarily for single document reads (`get`).
+      // Collection reads (`list`) are secured by the query in the client code,
+      // which Firestore validates against this rule.
+      allow read: if isSignedIn() && (resource.data.ownerUid == request.auth.uid || request.auth.token.email in resource.data.sharedWith);
 
-      // A user can create a list if they are logged in and they are the owner of the new list.
-      allow create: if request.auth != null && request.resource.data.ownerUid == request.auth.uid;
+      // A user can create a list if they are signed in and are the designated owner.
+      // We also validate the schema of the new list.
+      allow create: if isSignedIn() && request.resource.data.ownerUid == request.auth.uid
+                    && request.resource.data.name is string
+                    && request.resource.data.sharedWith is list
+                    && request.resource.data.sharedWith.size() == 0;
 
-      // Only the owner can update (e.g., rename, share) or delete the list.
-      allow update, delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
+      // Only the list owner can update it (e.g., rename, share/unshare).
+      // We also validate that only 'name' and 'sharedWith' fields can be changed.
+      allow update: if isSignedIn() && resource.data.ownerUid == request.auth.uid
+                    && request.resource.data.keys().hasOnly(['name', 'sharedWith']);
 
-      // Rules for the 'todos' subcollection
+      // Only the list owner can delete it.
+      allow delete: if isSignedIn() && resource.data.ownerUid == request.auth.uid;
+
+      // --- Subcollections ---
       match /todos/{todoId} {
-        // A user can perform any action on a to-do if they have access to the parent list.
-        allow read, create, update, delete: if request.auth != null &&
-                           (get(/databases/$(database)/documents/lists/$(listId)).data.ownerUid == request.auth.uid ||
-                            request.auth.token.email in get(/databases/$(database)/documents/lists/$(listId)).data.sharedWith);
+        // A user can read todos if they are a member of the parent list.
+        // For collection queries, this is checked once. For single doc reads, it performs a `get`.
+        allow read: if isListMember(listId);
+
+        // A list member can create a todo.
+        // We validate the schema of the new todo.
+        allow create: if isListMember(listId)
+                      && request.resource.data.text is string
+                      && request.resource.data.completed == false
+                      && request.resource.data.order is number;
+
+        // A list member can update a todo.
+        // We validate that only allowed fields can be changed.
+        allow update: if isListMember(listId)
+                      && request.resource.data.keys().hasOnly(['text', 'completed', 'order', 'dueDate']);
+
+        // A list member can delete a todo.
+        allow delete: if isListMember(listId);
       }
     }
   }
