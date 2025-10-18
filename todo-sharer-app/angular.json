@@ -34,10 +34,10 @@
             ],
             "scripts": [],
             "server": "src/main.server.ts",
-            "prerender": true,
             "ssr": {
               "entry": "src/server.ts"
-            }
+            },
+            "outputMode": "server"
           },
           "configurations": {
             "production": {
@@ -64,15 +64,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular/build:dapplication",
-          "options": {
-            "port": 8080,
-            "host": "0.0.0.0",
-            "liveReload": true,
-            "outputPath": "dist/todo-sharer-app/server",
-            "main": "src/main.server.ts",
-            "tsConfig": "tsconfig.json"
-          },
+          "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "todo-sharer-app:build:production"
