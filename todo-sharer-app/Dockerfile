@@ -20,4 +20,4 @@ RUN npm run build
 EXPOSE 8080
 
 # Define the command to run your app
-CMD node dist/todo-sharer-app/server/server.mjs
+CMD npm run serve:ssr
