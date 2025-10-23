@@ -20,4 +20,4 @@ RUN npm run build
 EXPOSE 8080
 
 # Define the command to run your app
-CMD npm run serve:ssr
+CMD ng serve
