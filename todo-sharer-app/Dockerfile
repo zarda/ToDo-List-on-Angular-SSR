@@ -1,23 +1,16 @@
-# Use an official Node.js runtime as a parent image
-FROM node:20-slim
-
-# Set the working directory in the container
+# Stage 1: Build the application
+FROM node:20-slim AS build
 WORKDIR /usr/src/app
-
-# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
-
-# Install any needed packages
 RUN npm install
-
-# Bundle app source
 COPY . .
-
-# Build the app
 RUN npm run build
 
-# Expose port 8080 to allow communication with the app
+# Stage 2: Create the production image
+FROM node:20-slim
+WORKDIR /usr/src/app
+COPY --from=build /usr/src/app/dist ./dist
+COPY package*.json ./
+RUN npm install --omit=dev
 EXPOSE 8080
-
-# Define the command to run your app
-CMD ng serve --host 0.0.0.0 --port 8080
+CMD [ "npm", "run", "serve:ssr" ]
