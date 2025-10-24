@@ -56,7 +56,7 @@ export class TodoService {
   async updateTodo(listId: string, todo: Partial<Todo> & { id: string }): Promise<void> {
     const todoDoc = doc(this.firestore, `lists/${listId}/todos/${todo.id}`);
     const { id, ...data } = todo;
-    await updateDoc(todoDoc, data);
+    await updateDoc(todoDoc, { ...data, updatedAt: serverTimestamp() });
   }
 
   async deleteTodo(listId: string, todoId: string): Promise<void> {
@@ -69,7 +69,7 @@ export class TodoService {
     updates.forEach(update => {
       const todoDoc = doc(this.firestore, `lists/${listId}/todos/${update.id}`);
       const { id, ...data } = update;
-      batch.update(todoDoc, data);
+      batch.update(todoDoc, { ...data, updatedAt: serverTimestamp() });
     });
     await batch.commit();
   }
