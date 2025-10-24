@@ -20,6 +20,11 @@
     </button>
   } @else {
     <mat-checkbox [checked]="todo.completed" (change)="completionToggled.emit($event.checked)" class="todo-checkbox">{{ todo.text }}</mat-checkbox>
+    <mat-form-field class="date-picker-form-field">
+      <input matInput [matDatepicker]="picker" [value]="todo.dueDate?.toDate()" (dateChange)="dueDateChanged.emit({ todoId: todo.id, dueDate: $event.value })" placeholder="Due date">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
     <button mat-icon-button (click)="editStarted.emit()" aria-label="Edit to-do"><mat-icon>edit</mat-icon></button>
     <button mat-icon-button color="warn" (click)="deleted.emit()" aria-label="Delete to-do"><mat-icon>delete</mat-icon></button>
   }

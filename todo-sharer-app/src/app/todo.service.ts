@@ -16,6 +16,7 @@ import {
   QueryOrderByConstraint,
   QueryCompositeFilterConstraint,
   CollectionReference,
+  WithFieldValue,
 } from '@angular/fire/firestore';
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -41,15 +42,16 @@ export class TodoService {
 
   async addTodo(listId: string, text: string): Promise<string> {
     const todosCollection = collection(this.firestore, `lists/${listId}/todos`) as CollectionReference<Todo>;
+    const currentTimestamp = serverTimestamp();
     const newTodo: TodoCreate = {
       text,
       completed: false,
-      createdAt: serverTimestamp(),
+      createdAt: currentTimestamp,
       updatedAt: null,
       order: Date.now(), // Simple initial order
-      dueDate: null,
+      dueDate: currentTimestamp,
     };
-    const docRef = await addDoc(todosCollection, newTodo);
+    const docRef = await addDoc(todosCollection, newTodo as WithFieldValue<Todo>);
     return docRef.id;
   }
 

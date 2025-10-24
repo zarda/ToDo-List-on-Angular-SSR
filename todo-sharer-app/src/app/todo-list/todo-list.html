@@ -52,7 +52,8 @@
                   (editStarted)="store.startEditingTodo(todo.id, todo.text)"
                   (editCancelled)="store.clearEditingTodo()"
                   (editSaved)="store.saveEditedTodoText()"
-                  (editTextChanged)="store.setEditingTodoText($event)"></app-todo-item>
+                  (editTextChanged)="store.setEditingTodoText($event)"
+                  (dueDateChanged)="store.updateDueDate($event)"></app-todo-item>
               </mat-list-item>
             } @empty {
               @if (store.selectedListId()) {

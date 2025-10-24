@@ -11,4 +11,4 @@ export interface Todo {
 }
 
 // Type for creating a new to-do, where some fields are set by the server.
-export type TodoCreate = Omit<Todo, 'id' | 'createdAt'> & { createdAt: FieldValue };
+export type TodoCreate = Omit<Todo, 'id' | 'createdAt' | 'dueDate'> & { createdAt: FieldValue; dueDate: FieldValue };
