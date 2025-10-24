@@ -70,7 +70,7 @@ service cloud.firestore {
         // A list member can update a todo.
         // We validate that only allowed fields can be changed.
         allow update: if isListMember(listId)
-                      && request.resource.data.keys().hasOnly(['text', 'completed', 'order', 'dueDate']);
+                      && request.resource.data.keys().hasOnly(['text', 'completed', 'order', 'dueDate', 'updatedAt', 'createdAt']);
 
         // A list member can delete a todo.
         allow delete: if isListMember(listId);

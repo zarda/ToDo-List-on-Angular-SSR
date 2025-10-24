@@ -418,7 +418,7 @@ export class TodoStore {
 
     await this._withOptimisticTodoUpdate(
       (todos) => todos.map(t => t.id === todoId ? { ...t, completed } : t),
-      () => this.todoService.updateTodo(listId, { ...todoToUpdate, completed }),
+      () => this.todoService.updateTodo(listId, { id: todoId, completed }),
       { errorMsg: 'Failed to update to-do status. Please try again.' }
     );
   }
@@ -439,7 +439,7 @@ export class TodoStore {
       await this._withOptimisticTodoUpdate(
         (todos) => todos.map(t => t.id === todoId ? { ...t, text: newText } : t),
         async () => {
-          await this.todoService.updateTodo(listId, { ...todoToUpdate, text: newText });
+          await this.todoService.updateTodo(listId, { id: todoId, text: newText });
           this.clearEditingTodo();
         },
         { errorMsg: 'Failed to save to-do. Please try again.' }
@@ -458,7 +458,7 @@ export class TodoStore {
 
     await this._withOptimisticTodoUpdate(
       (todos) => todos.map(t => t.id === todoId ? { ...t, dueDate: newDueDate } : t),
-      () => this.todoService.updateTodo(listId, { ...todoToUpdate, dueDate: newDueDate }),
+      () => this.todoService.updateTodo(listId, { id: todoId, dueDate: newDueDate }),
       {
         successMsg: 'Due date updated.',
         errorMsg: 'Failed to update due date. Please try again.'
