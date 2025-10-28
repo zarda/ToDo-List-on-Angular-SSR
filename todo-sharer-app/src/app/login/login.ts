@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../auth/auth.service';
@@ -14,6 +15,7 @@ import { AuthService } from '../auth/auth.service';
     CommonModule,
     MatCardModule,
     MatButtonModule,
+    MatFormFieldModule,
     MatIconModule,
     MatProgressSpinnerModule,
   ],

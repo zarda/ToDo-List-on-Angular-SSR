@@ -1,21 +1,37 @@
 .controls-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-top: 16px;
-  margin-bottom: 16px;
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .todo-search {
   flex-grow: 1;
-  max-width: 400px;
 }
 
 .action-buttons {
   display: flex;
-  flex-wrap: nowrap;
-  gap: 16px;
   align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  mat-chip-option {
+    display: flex;
+    align-items: center;
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.search-input {
+  width: 100%;
 }

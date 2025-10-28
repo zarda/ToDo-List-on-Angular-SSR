@@ -9,6 +9,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TodoStore } from '../todo-list/todo.store';
 
+import { MatChipsModule } from '@angular/material/chips';
+
 @Component({
   selector: 'app-todo-controls',
   standalone: true,
@@ -21,6 +23,7 @@ import { TodoStore } from '../todo-list/todo.store';
     MatTooltipModule,
     MatFormFieldModule,
     MatInputModule,
+    MatChipsModule,
   ],
   templateUrl: './todo-controls.html',
   styleUrls: ['./todo-controls.scss'],

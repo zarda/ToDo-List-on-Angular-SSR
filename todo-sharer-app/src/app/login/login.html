@@ -10,12 +10,15 @@
           <mat-spinner diameter="20" />
         </span>
         <span [hidden]="loading()" class="button-content">
-          <mat-icon>login</mat-icon><span>Login with Google</span>
+          <img src="/assets/google-logo.svg" alt="Google logo" />
+          <span>Login with Google</span>
         </span>
       </button>
     </mat-card-content>
     @if (error(); as errorMessage) {
-      <mat-card-footer class="error-footer">{{ errorMessage }}</mat-card-footer>
+      <mat-card-footer class="error-footer">
+        <mat-error>{{ errorMessage }}</mat-error>
+      </mat-card-footer>
     }
   </mat-card>
 </div>

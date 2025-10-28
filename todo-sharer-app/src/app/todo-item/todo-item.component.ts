@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,6 +16,7 @@ import { Todo } from '../models/todo.model';
   selector: 'app-todo-item',
   standalone: true,
   imports: [
+    CommonModule,
     MatCheckboxModule,
     MatButtonModule,
     MatIconModule,

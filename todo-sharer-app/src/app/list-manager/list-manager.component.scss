@@ -1,12 +1,13 @@
 .list-manager-container {
-  margin-bottom: 24px;
+  padding: 1rem;
 }
 
 .list-controls {
   display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  margin-bottom: 16px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .list-search {
@@ -14,25 +15,18 @@
 }
 
 .list-actions {
-  padding-top: 8px; // Align with form field content
-}
-
-.add-list-form,
-.edit-list-form {
   display: flex;
-  gap: 8px;
   align-items: center;
-  margin-top: 16px;
-  margin-bottom: 16px;
+  gap: 0.5rem;
 }
 
-.full-width {
-  flex-grow: 1;
+.edit-list-form, .add-list-form {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
-mat-selection-list {
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 4px;
-  max-height: 200px;
-  overflow-y: auto;
+mat-divider {
+  margin: 1rem 0;
 }

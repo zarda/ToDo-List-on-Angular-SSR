@@ -3,6 +3,11 @@
     <mat-form-field appearance="outline" class="list-search">
       <mat-label>Search Lists</mat-label>
       <input matInput [ngModel]="store.listSearchTerm()" (ngModelChange)="store.setListSearchTerm($event)" />
+      @if (store.listSearchTerm()) {
+        <button mat-icon-button matSuffix (click)="store.setListSearchTerm('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
 
@@ -37,6 +42,8 @@
     </div>
   }
 
+  <mat-divider></mat-divider>
+
   <mat-selection-list #listSelector [multiple]="false" (selectionChange)="store.setSelectedListId($event.options[0].value)">
     @for (list of store.filteredLists(); track list.id) {
       <mat-list-option [value]="list.id" [selected]="list.id === store.selectedListId()">
@@ -45,13 +52,15 @@
     }
   </mat-selection-list>
 
+  <mat-divider></mat-divider>
+
   <div class="add-list-form">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>New list name</mat-label>
       <input matInput [ngModel]="store.newListText()" (ngModelChange)="store.setNewListText($event)" (keyup.enter)="store.addList()" [disabled]="store.isAddingList()" />
     </mat-form-field>
     <button mat-raised-button color="primary" (click)="store.addList()" [disabled]="store.isAddingList()">
-      @if (store.isAddingList()) { <mat-spinner diameter="20"></mat-spinner> } @else { Add List }
+      @if (store.isAddingList()) { <mat-spinner diameter="20"></mat-spinner> } @else { <mat-icon>add</mat-icon> NewList }
     </button>
   </div>
 </div>

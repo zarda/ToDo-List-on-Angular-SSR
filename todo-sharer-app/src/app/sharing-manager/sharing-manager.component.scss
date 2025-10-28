@@ -1,41 +1,31 @@
-/* Sharing info display */
 .sharing-info {
+  padding: 1rem;
+}
+
+.sharing-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.member-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem 1.5rem; // row-gap column-gap
-  padding: 0.5rem 0.25rem;
-  font-size: 0.875rem;
-  width: 100%;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.share-form {
+  display: flex;
   align-items: center;
-  border-bottom: 1px solid #e0e0e0;
-  margin-bottom: 1.5rem;
+  gap: 1rem;
+  margin-top: 1rem;
+}
 
-  .sharing-label {
-    font-weight: 500;
-    color: #757575; /* Equivalent to grey-600 */
-  }
+.share-input {
+  flex-grow: 1;
+}
 
-  .member-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  // Remove default wrapper from mat-chip-listbox to allow flex layout
-  ::ng-deep .mdc-evolution-chip-set__chips {
-    display: contents;
-  }
-
-  .share-form {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    margin-left: auto; // Pushes the form to the right
-  }
-
-  .share-input {
-    // Reduce vertical space taken by the form field
-    --mat-form-field-subscript-bottom-padding: 0;
-    padding-top: 1.34375em;
-  }
+mat-divider {
+  margin: 1rem 0;
 }

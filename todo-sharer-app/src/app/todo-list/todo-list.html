@@ -17,58 +17,66 @@
       <app-list-manager></app-list-manager>
       @if (store.selectedList(); as list) {
         <app-sharing-manager></app-sharing-manager>
-        <form class="add-todo-form" (ngSubmit)="store.addTodo()">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>What needs to be done?</mat-label>
-            <input matInput [ngModel]="store.newTodoText()" (ngModelChange)="store.setNewTodoText($event)" [disabled]="store.isAddingTodo()" name="newTodo" />
-          </mat-form-field>
-          <button mat-raised-button color="primary" type="submit" [disabled]="store.isAddingTodo()">
-            @if(store.isAddingTodo()) { <mat-spinner diameter="20"></mat-spinner> } @else { Add To-Do }
-          </button>
-        </form>
+        <mat-divider></mat-divider>
+        <mat-card class="todo-list-card">
+          <mat-card-content>
+            <form class="add-todo-form" (ngSubmit)="store.addTodo()">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>What needs to be done?</mat-label>
+                <input matInput [ngModel]="store.newTodoText()" (ngModelChange)="store.setNewTodoText($event)" [disabled]="store.isAddingTodo()" name="newTodo" />
+              </mat-form-field>
+              <button mat-raised-button color="primary" type="submit" [disabled]="store.isAddingTodo()">
+                @if(store.isAddingTodo()) { <mat-spinner diameter="20"></mat-spinner> } @else { <mat-icon>add</mat-icon> ToDo }
+              </button>
+            </form>
 
-        <app-todo-controls></app-todo-controls>
+            <app-todo-controls></app-todo-controls>
 
-        @if(store.todosLoading()) {
-          <div class="spinner-container">
-            <mat-spinner diameter="50"></mat-spinner>
-          </div>
-        } @else {
-          <mat-list cdkDropList [cdkDropListDisabled]="store.sortBy() !== 'order' || store.isFiltered()" (cdkDropListDropped)="store.drop($event)" role="list">
-            @for (todo of store.todos(); track todo.id) {
-              <mat-list-item
-                cdkDrag [cdkDragData]="todo"
-                [cdkDragDisabled]="store.sortBy() !== 'order' || store.isFiltered()"
-                role="listitem"
-                [class.completed]="todo.completed"
-                [class.new-item-flash]="store.justAddedTodoId() === todo.id"
-              >
-                <app-todo-item
-                  [todo]="todo"
-                  [isEditing]="store.editingTodoId() === todo.id"
-                  [editingText]="store.editingTodoText()"
-                  (completionToggled)="store.toggleTodoCompletion({ todoId: todo.id, completed: $event })"
-                  (deleted)="store.deleteTodo(todo.id)"
-                  (editStarted)="store.startEditingTodo(todo.id, todo.text)"
-                  (editCancelled)="store.clearEditingTodo()"
-                  (editSaved)="store.saveEditedTodoText()"
-                  (editTextChanged)="store.setEditingTodoText($event)"
-                  (dueDateChanged)="store.updateDueDate($event)"></app-todo-item>
-              </mat-list-item>
-            } @empty {
-              @if (store.selectedListId()) {
-                <div class="empty-state">
-                  <p>No to-dos yet. Add one above!</p>
-                </div>
-              }
+            @if(store.todosLoading()) {
+              <div class="spinner-container">
+                <mat-spinner diameter="50"></mat-spinner>
+              </div>
+            } @else {
+              <mat-list cdkDropList [cdkDropListDisabled]="store.sortBy() !== 'order' || store.isFiltered()" (cdkDropListDropped)="store.drop($event)" role="list">
+                @for (todo of store.todos(); track todo.id) {
+                  <mat-list-item
+                    cdkDrag [cdkDragData]="todo"
+                    [cdkDragDisabled]="store.sortBy() !== 'order' || store.isFiltered()"
+                    role="listitem"
+                    [class.completed]="todo.completed"
+                    [class.new-item-flash]="store.justAddedTodoId() === todo.id"
+                  >
+                    <app-todo-item
+                      [todo]="todo"
+                      [isEditing]="store.editingTodoId() === todo.id"
+                      [editingText]="store.editingTodoText()"
+                      (completionToggled)="store.toggleTodoCompletion({ todoId: todo.id, completed: $event })"
+                      (deleted)="store.deleteTodo(todo.id)"
+                      (editStarted)="store.startEditingTodo(todo.id, todo.text)"
+                      (editCancelled)="store.clearEditingTodo()"
+                      (editSaved)="store.saveEditedTodoText()"
+                      (editTextChanged)="store.setEditingTodoText($event)"
+                      (dueDateChanged)="store.updateDueDate($event)"></app-todo-item>
+                  </mat-list-item>
+                } @empty {
+                  @if (store.selectedListId()) {
+                    <div class="empty-state">
+                      <mat-icon>add_task</mat-icon>
+                      <h3>This list is empty.</h3>
+                      <p>Get started by adding your first to-do item above.</p>
+                    </div>
+                  }
+                }
+              </mat-list>
             }
-          </mat-list>
-        }
+          </mat-card-content>
+        </mat-card>
       }
     } @else {
       <div class="empty-state">
-        <h2>Welcome!</h2>
-        <p>Create your first to-do list to get started.</p>
+        <mat-icon>list_alt</mat-icon>
+        <h2>Welcome to your To-Do List!</h2>
+        <p>Create your first list to get started.</p>
         <app-list-manager></app-list-manager>
       </div>
     }

@@ -1,4 +1,4 @@
-<div class="todo-item-content">
+<div class="todo-item-content" [class.completed-item]="todo.completed">
   @if (isEditing) {
     <form (ngSubmit)="editSaved.emit()" class="edit-form">
       <mat-form-field appearance="outline" class="edit-input">
@@ -20,11 +20,19 @@
     </button>
   } @else {
     <mat-checkbox [checked]="todo.completed" (change)="completionToggled.emit($event.checked)" class="todo-checkbox">{{ todo.text }}</mat-checkbox>
-    <mat-form-field class="date-picker-form-field">
-      <input matInput [matDatepicker]="picker" [value]="todo.dueDate?.toDate()" (dateChange)="dueDateChanged.emit({ todoId: todo.id, dueDate: $event.value })" placeholder="Due date">
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+    <div class="due-date-container">
+      @if (todo.dueDate) {
+        <span class="due-date-text">Due: {{ todo.dueDate.toDate() | date: 'shortDate' }}</span>
+      }
+      <mat-form-field class="date-picker-form-field">
+        <input matInput [matDatepicker]="picker" [value]="todo.dueDate?.toDate()" (dateChange)="dueDateChanged.emit({ todoId: todo.id, dueDate: $event.value })" placeholder="Set due date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <button mat-icon-button matSuffix (click)="dueDateChanged.emit({ todoId: todo.id, dueDate: null })" [disabled]="!todo.dueDate">
+          <mat-icon>clear</mat-icon>
+        </button>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
     <button mat-icon-button (click)="editStarted.emit()" aria-label="Edit to-do"><mat-icon>edit</mat-icon></button>
     <button mat-icon-button color="warn" (click)="deleted.emit()" aria-label="Delete to-do"><mat-icon>delete</mat-icon></button>
   }

@@ -1,74 +1,41 @@
-// Base styles for the list item content
-:host {
+.todo-item-content {
   display: flex;
-  width: 100%;
   align-items: center;
+  width: 100%;
+
+  &.completed-item {
+    .todo-checkbox {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+  }
 }
 
-.view, .edit-view {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 1rem;
-  padding: 8px 0;
-}
-
-.todo-text {
+.todo-checkbox {
   flex-grow: 1;
-  cursor: text;
 }
 
-.todo-actions {
+.edit-form {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+}
+
+.edit-input {
+  flex-grow: 1;
+}
+
+.due-date-container {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.due-date {
+.due-date-text {
   font-size: 0.8rem;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background-color: var(--mat-sys-surface-container-high);
-  color: var(--mat-sys-on-surface-variant);
-  white-space: nowrap;
-
-  &.overdue {
-    background-color: var(--mat-sys-tertiary-container);
-    color: var(--mat-sys-on-tertiary-container);
-  }
+  color: rgba(0, 0, 0, 0.6);
 }
 
-.updated-date {
-  display: flex;
-  align-items: center;
-  font-size: 0.8rem;
-  color: var(--mat-sys-on-surface-variant);
-  .mat-icon {
-    font-size: 1rem;
-    width: 1rem;
-    height: 1rem;
-  }
-}
-
-// The datepicker input is only a trigger, so we hide it.
-.hidden-datepicker {
-  width: 0;
-  height: 0;
-  border: none;
-  padding: 0;
-  position: absolute;
-  opacity: 0;
-}
-
-.edit-input {
-  flex-grow: 1;
-  // Remove extra space below the form field in edit mode
-  .mdc-form-field {
-    padding-bottom: 0;
-  }
-}
-
-.drag-handle {
-  cursor: move;
-  color: var(--mat-sys-on-surface-variant);
+.date-picker-form-field {
+  width: 120px;
 }

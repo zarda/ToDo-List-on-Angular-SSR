@@ -13,6 +13,11 @@
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
     <mat-menu #userMenu="matMenu">
+      <div class="user-info">
+        <span class="user-name">{{ currentUser.displayName }}</span>
+        <span class="user-email">{{ currentUser.email }}</span>
+      </div>
+      <mat-divider></mat-divider>
       <button mat-menu-item (click)="logout()">
         <mat-icon>logout</mat-icon>
         <span>Logout</span>

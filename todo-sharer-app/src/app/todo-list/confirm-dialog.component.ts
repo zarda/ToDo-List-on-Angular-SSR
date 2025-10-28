@@ -1,19 +1,21 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-
-export interface ConfirmDialogData {
-  title: string;
-  message: string;
-}
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-confirm-dialog',
+  templateUrl: './confirm-dialog.component.html',
   standalone: true,
   imports: [CommonModule, MatDialogModule, MatButtonModule],
-  templateUrl: './confirm-dialog.component.html',
 })
 export class ConfirmDialogComponent {
-  public readonly data: ConfirmDialogData = inject(MAT_DIALOG_DATA);
+  constructor(
+    public dialogRef: MatDialogRef<ConfirmDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { title: string; message: string }
+  ) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 }

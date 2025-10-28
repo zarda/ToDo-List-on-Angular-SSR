@@ -5,7 +5,11 @@
       <mat-chip-set>
         <!-- Owner Chip -->
         <mat-chip [highlighted]="true">
-          <img matChipAvatar [src]="list.ownerPhotoURL || 'assets/default-avatar.png'" alt="Owner avatar" />
+          @if (list.ownerPhotoURL) {
+            <img matChipAvatar [src]="list.ownerPhotoURL" alt="Owner avatar" />
+          } @else {
+            <mat-icon matChipAvatar>account_circle</mat-icon>
+          }
           {{ list.ownerEmail }}
           <mat-icon matChipTrailingIcon>star</mat-icon>
         </mat-chip>
@@ -26,6 +30,7 @@
         }}
       </mat-chip-set>
     </div>
+    <mat-divider></mat-divider>
     <!-- Share button and form -->
     @if(list.ownerUid === store.currentUser()?.uid) {
       @if (store.isSharing()) {
@@ -42,7 +47,7 @@
           </button>
         </div>
       } @else {
-        <button mat-stroked-button (click)="store.startSharing()">
+        <button mat-raised-button color="primary" (click)="store.startSharing()">
           <mat-icon>person_add</mat-icon> Share
         </button>
       }
