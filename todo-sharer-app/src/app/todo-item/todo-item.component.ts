@@ -9,8 +9,11 @@ import { FormsModule } from '@angular/forms';
 import { A11yModule } from '@angular/cdk/a11y';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+
 
 import { Todo } from '../models/todo.model';
+import { DueDateEditorComponent } from '../due-date-editor/due-date-editor.component';
 
 @Component({
   selector: 'app-todo-item',
@@ -26,6 +29,7 @@ import { Todo } from '../models/todo.model';
     A11yModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatDialogModule,
   ],
   templateUrl: './todo-item.component.html',
   styleUrl: './todo-item.component.scss',
@@ -43,4 +47,19 @@ export class TodoItemComponent {
   @Output() editSaved = new EventEmitter<void>();
   @Output() editTextChanged = new EventEmitter<string>();
   @Output() dueDateChanged = new EventEmitter<{ todoId: string; dueDate: Date | null }>();
+
+  constructor(public dialog: MatDialog) {}
+
+  openDueDateEditor(): void {
+    const dialogRef = this.dialog.open(DueDateEditorComponent, {
+      width: '250px',
+      data: { dueDate: this.todo.dueDate?.toDate() },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        this.dueDateChanged.emit({ todoId: this.todo.id, dueDate: result });
+      }
+    });
+  }
 }

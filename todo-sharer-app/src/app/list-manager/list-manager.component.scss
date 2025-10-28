@@ -2,7 +2,7 @@
   padding: 1rem;
 }
 
-.list-controls {
+.list-controls, .add-list-form {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -10,7 +10,7 @@
   margin-bottom: 1rem;
 }
 
-.list-search {
+.flex-grow1 {
   flex-grow: 1;
 }
 
@@ -18,13 +18,6 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.edit-list-form, .add-list-form {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1rem;
 }
 
 mat-divider {
