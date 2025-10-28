@@ -9,8 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialogModule } from '@angular/material/dialog';
+
 
 import { TodoStore } from './todo.store';
 import { ListManagerComponent } from '../list-manager/list-manager.component';
@@ -33,8 +32,6 @@ import { TodoItemComponent } from '../todo-item/todo-item.component';
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule,
-    MatDialogModule,
     ListManagerComponent,
     SharingManagerComponent,
     TodoControlsComponent,

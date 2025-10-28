@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './auth.guard';
-import { TodoStore } from './todo-list/todo.store';
 
 export const routes: Routes = [
   {

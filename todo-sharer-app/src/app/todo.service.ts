@@ -12,9 +12,6 @@ import {
   getDocs,
   writeBatch,
   serverTimestamp,
-  Query,
-  QueryOrderByConstraint,
-  QueryCompositeFilterConstraint,
   CollectionReference,
   WithFieldValue,
 } from '@angular/fire/firestore';
