@@ -1,5 +1,12 @@
 .main-content {
   margin: auto;
   min-width: 400px;
-  max-width: 900px;
+  max-width: 900px
+}
+
+.theme-switcher {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
 }

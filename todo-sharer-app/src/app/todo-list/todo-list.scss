@@ -10,7 +10,7 @@
     font-size: 4rem;
     height: 4rem;
     width: 4rem;
-    color: rgba(0, 0, 0, 0.54);
+    color: var(--mat-sys-on-surface-variant);
   }
 
   h2, h3 {
@@ -33,5 +33,3 @@ mat-divider {
 .full-width {
   width: 80%;
 }
-
-

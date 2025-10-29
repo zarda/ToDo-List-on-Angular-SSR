@@ -1,4 +1,7 @@
 <app-navigation></app-navigation>
 <main class="main-content">
   <router-outlet></router-outlet>
+  <button mat-icon-button (click)="toggleTheme()" class="theme-switcher">
+    <mat-icon>{{ isDarkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
 </main>
