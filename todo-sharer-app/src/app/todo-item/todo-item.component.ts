@@ -63,4 +63,32 @@ export class TodoItemComponent {
       }
     });
   }
+
+  getDueDateClass(): string {
+    if (!this.todo.dueDate || this.todo.completed) {
+      return '';
+    }
+
+    const now = new Date();
+    const dueDate = this.todo.dueDate.toDate();
+    const diffTime = dueDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      return 'overdue';
+    } else if (diffDays <= 2) {
+      return 'due-soon';
+    }
+    return '';
+  }
+
+  getDueDateIcon(): string {
+    const dueDateClass = this.getDueDateClass();
+    if (dueDateClass === 'overdue') {
+      return 'error';
+    } else if (dueDateClass === 'due-soon') {
+      return 'warning';
+    }
+    return 'schedule';
+  }
 }

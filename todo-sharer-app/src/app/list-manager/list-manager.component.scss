@@ -23,3 +23,43 @@
 mat-divider {
   margin: 1rem 0;
 }
+
+// Mobile optimizations
+@media (max-width: 480px) {
+  .list-manager-container {
+    padding: 0.5rem;
+  }
+
+  .list-controls, .add-list-form {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    mat-form-field {
+      width: 100%;
+      flex-basis: 100%;
+      font-size: 0.9rem;
+    }
+
+    button {
+      min-width: 44px;
+      height: 44px;
+    }
+  }
+
+  .list-actions {
+    width: 100%;
+    justify-content: flex-end;
+
+    button {
+      min-width: 44px;
+      height: 44px;
+    }
+  }
+
+  mat-selection-list {
+    mat-list-option {
+      font-size: 0.9rem;
+      padding: 0 0.5rem;
+    }
+  }
+}

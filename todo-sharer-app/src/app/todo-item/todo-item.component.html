@@ -20,14 +20,13 @@
     </button>
   } @else {
     <mat-checkbox [checked]="todo.completed" (change)="completionToggled.emit($event.checked)" class="todo-checkbox">{{ todo.text }}</mat-checkbox>
-    <div class="due-date-container">
+    <button class="due-date-container" [class.has-overdue]="getDueDateClass() === 'overdue'" [class.has-due-soon]="getDueDateClass() === 'due-soon'" (click)="openDueDateEditor()" [attr.aria-label]="todo.dueDate ? 'Edit due date: ' + (todo.dueDate.toDate() | date: 'MMM d') : 'Add due date'" type="button">
       @if (todo.dueDate) {
-        <span class="due-date-text">Due: {{ todo.dueDate.toDate() | date: 'shortDate' }}</span>
+        <mat-icon class="status-icon" [class]="getDueDateClass()">{{ getDueDateIcon() }}</mat-icon>
+        <span class="due-date-text" [class]="getDueDateClass()">{{ todo.dueDate.toDate() | date: 'MMM d' }}</span>
       }
-      <button mat-icon-button (click)="openDueDateEditor()" aria-label="Edit due date">
-        <mat-icon>edit_calendar</mat-icon>
-      </button>
-    </div>
+      <mat-icon class="edit-icon">{{ todo.dueDate ? 'edit_calendar' : 'event' }}</mat-icon>
+    </button>
     <button mat-icon-button (click)="editStarted.emit()" aria-label="Edit to-do"><mat-icon>edit</mat-icon></button>
     <button mat-icon-button color="warn" (click)="deleted.emit()" aria-label="Delete to-do"><mat-icon>delete</mat-icon></button>
   }
