@@ -28,7 +28,7 @@
     }
   </mat-button-toggle>
 
-  <mat-chip-listbox class="sort-controls" [value]="store.sortBy()" (change)="store.setSortBy($event.value)" aria-label="Sort by">
+  <mat-chip-listbox class="sort-controls" [value]="store.sortBy()" (change)="onSortChange($event)" aria-label="Sort by">
     <mat-chip-option value="order" matTooltip="Sort by order">
       <mat-icon>drag_handle</mat-icon>
     </mat-chip-option>

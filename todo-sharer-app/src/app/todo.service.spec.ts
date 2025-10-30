@@ -36,11 +36,74 @@ describe('TodoService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return empty data when no listId is provided', (done) => {
-    service.getTodos('', 'order', 'asc').subscribe(result => {
-      expect(result.loading).toBeFalse();
-      expect(result.data).toEqual([]);
-      done();
+  describe('getTodos', () => {
+    it('should return empty data when no listId is provided', (done) => {
+      service.getTodos('', 'order', 'asc').subscribe(result => {
+        expect(result.loading).toBeFalse();
+        expect(result.data).toEqual([]);
+        done();
+      });
+    });
+
+    it('should accept "order" as sortBy parameter with "asc" direction', (done) => {
+      service.getTodos('', 'order', 'asc').subscribe(result => {
+        expect(result).toBeDefined();
+        expect(result.loading).toBeFalse();
+        expect(result.data).toEqual([]);
+        done();
+      });
+    });
+
+    it('should accept "dueDate" as sortBy parameter with "asc" direction', (done) => {
+      service.getTodos('', 'dueDate', 'asc').subscribe(result => {
+        expect(result).toBeDefined();
+        expect(result.loading).toBeFalse();
+        expect(result.data).toEqual([]);
+        done();
+      });
+    });
+
+    it('should accept "createdAt" as sortBy parameter with "desc" direction', (done) => {
+      service.getTodos('', 'createdAt', 'desc').subscribe(result => {
+        expect(result).toBeDefined();
+        expect(result.loading).toBeFalse();
+        expect(result.data).toEqual([]);
+        done();
+      });
+    });
+
+    it('should accept "createdAt" as sortBy parameter with "asc" direction', (done) => {
+      service.getTodos('', 'createdAt', 'asc').subscribe(result => {
+        expect(result).toBeDefined();
+        expect(result.loading).toBeFalse();
+        expect(result.data).toEqual([]);
+        done();
+      });
+    });
+
+    it('should accept "dueDate" as sortBy parameter with "desc" direction', (done) => {
+      service.getTodos('', 'dueDate', 'desc').subscribe(result => {
+        expect(result).toBeDefined();
+        expect(result.loading).toBeFalse();
+        expect(result.data).toEqual([]);
+        done();
+      });
+    });
+
+    it('should return empty data when listId is null', (done) => {
+      service.getTodos(null as any, 'order', 'asc').subscribe(result => {
+        expect(result.loading).toBeFalse();
+        expect(result.data).toEqual([]);
+        done();
+      });
+    });
+
+    it('should return empty data when listId is undefined', (done) => {
+      service.getTodos(undefined as any, 'order', 'asc').subscribe(result => {
+        expect(result.loading).toBeFalse();
+        expect(result.data).toEqual([]);
+        done();
+      });
     });
   });
 

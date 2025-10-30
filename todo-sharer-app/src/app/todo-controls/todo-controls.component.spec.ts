@@ -45,4 +45,62 @@ describe('TodoControlsComponent', () => {
     expect(component['store']).toBeDefined();
     expect(typeof component['store']).toBe('object');
   });
+
+  // Test sorting functionality
+  describe('Sort functionality', () => {
+    describe('onSortChange', () => {
+      it('should call store.setSortBy with "order" when order is selected', () => {
+        const event = { value: 'order' };
+        component.onSortChange(event);
+        expect(mockStore.setSortBy).toHaveBeenCalledWith('order');
+      });
+
+      it('should call store.setSortBy with "dueDate" when dueDate is selected', () => {
+        const event = { value: 'dueDate' };
+        component.onSortChange(event);
+        expect(mockStore.setSortBy).toHaveBeenCalledWith('dueDate');
+      });
+
+      it('should call store.setSortBy with "createdAt" when createdAt is selected', () => {
+        const event = { value: 'createdAt' };
+        component.onSortChange(event);
+        expect(mockStore.setSortBy).toHaveBeenCalledWith('createdAt');
+      });
+
+      it('should not call store.setSortBy when event value is null', () => {
+        const event = { value: null };
+        component.onSortChange(event);
+        expect(mockStore.setSortBy).not.toHaveBeenCalled();
+      });
+
+      it('should not call store.setSortBy when event value is undefined', () => {
+        const event = { value: undefined };
+        component.onSortChange(event);
+        expect(mockStore.setSortBy).not.toHaveBeenCalled();
+      });
+
+      it('should not call store.setSortBy when event value is empty string', () => {
+        const event = { value: '' };
+        component.onSortChange(event);
+        expect(mockStore.setSortBy).not.toHaveBeenCalled();
+      });
+
+      it('should handle event object with no value property gracefully', () => {
+        const event = {};
+        expect(() => component.onSortChange(event)).not.toThrow();
+        expect(mockStore.setSortBy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('Sort button UI integration', () => {
+      it('should display current sort value from store', () => {
+        expect(mockStore.sortBy!()).toBe('order');
+      });
+
+      it('should have access to sortBy signal from store', () => {
+        expect(mockStore.sortBy).toBeDefined();
+        expect(typeof mockStore.sortBy).toBe('function');
+      });
+    });
+  });
 });

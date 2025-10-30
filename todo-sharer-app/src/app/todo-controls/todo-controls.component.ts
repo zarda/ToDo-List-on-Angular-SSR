@@ -30,4 +30,11 @@ import { MatChipsModule } from '@angular/material/chips';
 })
 export class TodoControlsComponent {
   protected readonly store = inject(TodoStore);
+
+  onSortChange(event: any): void {
+    const value = event.value as 'order' | 'dueDate' | 'createdAt';
+    if (value) {
+      this.store.setSortBy(value);
+    }
+  }
 }

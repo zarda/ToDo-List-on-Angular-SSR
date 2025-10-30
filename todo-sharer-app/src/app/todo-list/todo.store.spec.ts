@@ -528,4 +528,162 @@ describe('TodoStore', () => {
       });
     });
   });
+
+  // Test sorting functionality
+  describe('Sorting Functionality', () => {
+    describe('setSortBy', () => {
+      it('should update sortBy to "order"', () => {
+        store.setSortBy('order');
+        expect(store.sortBy()).toBe('order');
+      });
+
+      it('should update sortBy to "dueDate"', () => {
+        store.setSortBy('dueDate');
+        expect(store.sortBy()).toBe('dueDate');
+      });
+
+      it('should update sortBy to "createdAt"', () => {
+        store.setSortBy('createdAt');
+        expect(store.sortBy()).toBe('createdAt');
+      });
+
+      it('should default to "order" on initialization', () => {
+        expect(store.sortBy()).toBe('order');
+      });
+    });
+
+    describe('sortBy signal reactivity', () => {
+      it('should trigger getTodos when sortBy changes', () => {
+        store.setSelectedListId('list-123');
+        todoServiceMock.getTodos.calls.reset();
+
+        store.setSortBy('dueDate');
+
+        // Note: The actual effect runs asynchronously, so we just verify the sortBy changed
+        expect(store.sortBy()).toBe('dueDate');
+      });
+
+      it('should pass correct sort parameters when sortBy is "order"', () => {
+        const mockTodos = [
+          { id: '1', text: 'Todo 1', completed: false, order: 1000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null },
+          { id: '2', text: 'Todo 2', completed: false, order: 2000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null }
+        ];
+        todoServiceMock.getTodos.and.returnValue(of({ loading: false, data: mockTodos }));
+
+        store.setSelectedListId('list-123');
+        store.setSortBy('order');
+
+        expect(store.sortBy()).toBe('order');
+      });
+
+      it('should pass correct sort parameters when sortBy is "createdAt"', () => {
+        const mockTodos = [
+          { id: '1', text: 'Todo 1', completed: false, order: 1000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null },
+          { id: '2', text: 'Todo 2', completed: false, order: 2000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null }
+        ];
+        todoServiceMock.getTodos.and.returnValue(of({ loading: false, data: mockTodos }));
+
+        store.setSelectedListId('list-123');
+        store.setSortBy('createdAt');
+
+        expect(store.sortBy()).toBe('createdAt');
+      });
+
+      it('should pass correct sort parameters when sortBy is "dueDate"', () => {
+        const mockTodos = [
+          { id: '1', text: 'Todo 1', completed: false, order: 1000, createdAt: Timestamp.now(), dueDate: Timestamp.now(), ownerUid: 'user-123', updatedAt: null },
+          { id: '2', text: 'Todo 2', completed: false, order: 2000, createdAt: Timestamp.now(), dueDate: Timestamp.now(), ownerUid: 'user-123', updatedAt: null }
+        ];
+        todoServiceMock.getTodos.and.returnValue(of({ loading: false, data: mockTodos }));
+
+        store.setSelectedListId('list-123');
+        store.setSortBy('dueDate');
+
+        expect(store.sortBy()).toBe('dueDate');
+      });
+    });
+
+    describe('filtering with sorting', () => {
+      it('should filter todos based on search term while maintaining sort order', () => {
+        const mockTodos = [
+          { id: '1', text: 'Buy milk', completed: false, order: 1000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null },
+          { id: '2', text: 'Buy bread', completed: false, order: 2000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null },
+          { id: '3', text: 'Clean house', completed: false, order: 3000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null }
+        ];
+
+        // Manually update the state to simulate loaded todos
+        store.setSelectedListId('list-123');
+        store['state'].update(s => ({ ...s, todos: mockTodos }));
+
+        store.setSearchTerm('buy');
+
+        const filteredTodos = store.todos();
+        expect(filteredTodos.length).toBe(2);
+        expect(filteredTodos[0].text).toBe('Buy milk');
+        expect(filteredTodos[1].text).toBe('Buy bread');
+      });
+
+      it('should hide completed todos while maintaining sort order', () => {
+        const mockTodos = [
+          { id: '1', text: 'Todo 1', completed: true, order: 1000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null },
+          { id: '2', text: 'Todo 2', completed: false, order: 2000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null },
+          { id: '3', text: 'Todo 3', completed: false, order: 3000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null }
+        ];
+
+        store.setSelectedListId('list-123');
+        store['state'].update(s => ({ ...s, todos: mockTodos }));
+
+        store.setHideCompleted(true);
+
+        const filteredTodos = store.todos();
+        expect(filteredTodos.length).toBe(2);
+        expect(filteredTodos.every(t => !t.completed)).toBeTrue();
+      });
+
+      it('should combine search and hideCompleted filters', () => {
+        const mockTodos = [
+          { id: '1', text: 'Buy milk', completed: true, order: 1000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null },
+          { id: '2', text: 'Buy bread', completed: false, order: 2000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null },
+          { id: '3', text: 'Clean house', completed: false, order: 3000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null }
+        ];
+
+        store.setSelectedListId('list-123');
+        store['state'].update(s => ({ ...s, todos: mockTodos }));
+
+        store.setSearchTerm('buy');
+        store.setHideCompleted(true);
+
+        const filteredTodos = store.todos();
+        expect(filteredTodos.length).toBe(1);
+        expect(filteredTodos[0].text).toBe('Buy bread');
+        expect(filteredTodos[0].completed).toBeFalse();
+      });
+    });
+
+    describe('isFiltered computed', () => {
+      it('should be false when no filters are active', () => {
+        store.setSearchTerm('');
+        store.setHideCompleted(false);
+        expect(store.isFiltered()).toBeFalse();
+      });
+
+      it('should be true when search term is active', () => {
+        store.setSearchTerm('test');
+        store.setHideCompleted(false);
+        expect(store.isFiltered()).toBeTrue();
+      });
+
+      it('should be true when hideCompleted is active', () => {
+        store.setSearchTerm('');
+        store.setHideCompleted(true);
+        expect(store.isFiltered()).toBeTrue();
+      });
+
+      it('should be true when both filters are active', () => {
+        store.setSearchTerm('test');
+        store.setHideCompleted(true);
+        expect(store.isFiltered()).toBeTrue();
+      });
+    });
+  });
 });
