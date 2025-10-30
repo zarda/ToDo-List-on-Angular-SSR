@@ -112,4 +112,57 @@ describe('TodoListComponent', () => {
   it('should initialize with the provided store', () => {
     expect(component['store']).toBeTruthy();
   });
+
+  it('should have TodoStore instance available', () => {
+    expect(component['store']).toBeTruthy();
+    expect(typeof component['store']).toBe('object');
+  });
+
+  it('should have access to store signals', () => {
+    expect(component['store'].todos).toBeDefined();
+    expect(component['store'].lists).toBeDefined();
+    expect(component['store'].selectedListId).toBeDefined();
+  });
+
+  it('should have access to store loading states', () => {
+    expect(component['store'].todosLoading).toBeDefined();
+    expect(component['store'].listsLoading).toBeDefined();
+    expect(component['store'].isSavingTodo).toBeDefined();
+  });
+
+  it('should provide TodoStore to child components', () => {
+    const providers = fixture.debugElement.injector.get(TodoStore);
+    expect(providers).toBeTruthy();
+  });
+
+  it('should render without errors when store has empty data', () => {
+    expect(() => fixture.detectChanges()).not.toThrow();
+  });
+
+  it('should have access to store todo management methods', () => {
+    expect(component['store'].addTodo).toBeDefined();
+    expect(component['store'].deleteTodo).toBeDefined();
+    expect(component['store'].toggleTodoCompletion).toBeDefined();
+  });
+
+  it('should have access to store list management methods', () => {
+    expect(component['store'].addList).toBeDefined();
+    expect(component['store'].deleteList).toBeDefined();
+    expect(component['store'].setSelectedListId).toBeDefined();
+  });
+
+  it('should have access to store filtering and sorting methods', () => {
+    expect(component['store'].setSearchTerm).toBeDefined();
+    expect(component['store'].setSortBy).toBeDefined();
+    expect(component['store'].setHideCompleted).toBeDefined();
+  });
+
+  it('should have access to store sharing methods', () => {
+    expect(component['store'].shareList).toBeDefined();
+    expect(component['store'].unshareList).toBeDefined();
+  });
+
+  it('should have drag-drop functionality available', () => {
+    expect(component['store'].drop).toBeDefined();
+  });
 });
