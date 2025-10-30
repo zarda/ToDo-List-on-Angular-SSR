@@ -11,10 +11,10 @@ import { User } from '../user';
   providedIn: 'root'
 })
 export class AuthService {
-  private auth: Auth = inject(Auth);
-  private firestore: Firestore = inject(Firestore);
-  private router: Router = inject(Router);
-  private usersCollection = collection(this.firestore, 'users');
+  private readonly auth: Auth = inject(Auth);
+  private readonly firestore: Firestore = inject(Firestore);
+  private readonly router: Router = inject(Router);
+  private readonly usersCollection = collection(this.firestore, 'users');
 
   /**
    * An observable that emits the currently authenticated user's profile from Firestore,
@@ -45,6 +45,9 @@ export class AuthService {
     this.currentUser = toSignal(this.user$, { initialValue: null });
   }
 
+  /**
+   * Initiates the Google login process.
+   */
   async loginWithGoogle(): Promise<void> {
     try {
       const provider = new GoogleAuthProvider();
@@ -57,11 +60,18 @@ export class AuthService {
     }
   }
 
+  /**
+   * Logs the user out and redirects to the login page.
+   */
   async logout(): Promise<void> {
     await signOut(this.auth);
     await this.router.navigate(['/login']); // Explicitly redirect to login page
   }
 
+  /**
+   * Updates the user data in Firestore.
+   * @param user The user object from Firebase Auth.
+   */
   private updateUserData(user: AuthUser): Promise<void> {
     const userDocRef = doc(this.firestore, `users/${user.uid}`);
     if (!user.email) {

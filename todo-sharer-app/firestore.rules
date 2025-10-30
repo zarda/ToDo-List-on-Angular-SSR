@@ -17,10 +17,7 @@ service cloud.firestore {
     // Checks if the requesting user is a member (owner or collaborator) of a given list.
     function isListMember(listId) {
       let list = get(/databases/$(database)/documents/lists/$(listId));
-      return isSignedIn() && (
-        list.data.ownerUid == request.auth.uid || 
-        request.auth.token.email in list.data.sharedWith
-      );
+      return list.data.ownerUid == request.auth.uid || request.auth.token.email in list.data.sharedWith;
     }
 
     // --- Collections ---
@@ -29,12 +26,12 @@ service cloud.firestore {
       allow read: if isSignedIn();
 
       // A user can only write to their own profile.
-      allow write: if request.auth.uid == userId;
+      allow write: if isSignedIn() && request.auth.uid == userId;
     }
 
     match /lists/{listId} {
       // A user can get a single list if they are a member.
-      allow get: if isListMember(listId);
+      allow get: if isSignedIn() && isListMember(listId);
 
       // A user can query for lists they own or are shared with.
       // The client-side query must include a filter on 'ownerUid' or 'sharedWith'.
@@ -42,23 +39,28 @@ service cloud.firestore {
 
       // A user can create a list if they are signed in and are the designated owner.
       // We also validate the schema of the new list.
-      allow create: if isSignedIn() && request.resource.data.ownerUid == request.auth.uid
+      allow create: if isSignedIn() 
+                    && request.resource.data.ownerUid == request.auth.uid
                     && request.resource.data.name is string
                     && request.resource.data.sharedWith is map
                     && request.resource.data.sharedWith.size() == 0;
 
       // A list member can update the `sharedWith` field to add or remove collaborators.
       // Only the owner can change the list's name.
-      allow update: if (isListOwner(listId) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'sharedWith'])) ||
-                    (isListMember(listId) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sharedWith']));
+      allow update: if isSignedIn() && isListMember(listId)
+                    && (
+                      (isListOwner(listId) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'sharedWith'])) ||
+                      (!isListOwner(listId) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sharedWith']))
+                    );
 
       // Only the list owner can delete it.
-      allow delete: if isSignedIn() && resource.data.ownerUid == request.auth.uid;
+      allow delete: if isSignedIn() && isListOwner(listId);
 
       // --- Subcollections ---
       match /todos/{todoId} {
         // For single doc reads, a user must be a member of the parent list.
-        allow get: if isListMember(listId);
+        allow get: if isSignedIn() && isListMember(listId);
+        
         // For collection queries, we allow any authenticated user to query.
         // This is because security rules for queries cannot perform `get` operations
         // to check the parent list's permissions. The client-side query must
@@ -67,18 +69,20 @@ service cloud.firestore {
 
         // A list member can create a todo.
         // We validate the schema of the new todo.
-        allow create: if isListMember(listId)
+        allow create: if isSignedIn() 
+                      && isListMember(listId)
                       && request.resource.data.text is string
                       && request.resource.data.completed == false
                       && request.resource.data.order is number;
 
         // A list member can update a todo.
         // We validate that only allowed fields can be changed.
-        allow update: if isListMember(listId)
+        allow update: if isSignedIn() 
+                      && isListMember(listId)
                       && request.resource.data.keys().hasOnly(['text', 'completed', 'order', 'dueDate', 'updatedAt', 'createdAt']);
 
         // A list member can delete a todo.
-        allow delete: if isListMember(listId);
+        allow delete: if isSignedIn() && isListMember(listId);
       }
     }
   }

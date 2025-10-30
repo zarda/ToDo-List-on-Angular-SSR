@@ -54,3 +54,16 @@ body {
 .new-item-flash {
   animation: flash 1.5s ease-out;
 }
+
+.due-date-editor-dialog .mat-dialog-container {
+  background-color: white;
+  overflow: hidden;
+}
+
+.due-date-editor-dialog .mat-mdc-dialog-surface {
+  overflow: hidden;
+}
+
+.due-date-editor-dialog .mat-calendar {
+  background-color: white;
+}

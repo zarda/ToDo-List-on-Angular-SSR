@@ -4,11 +4,12 @@ import { RouterOutlet } from '@angular/router';
 import { Navigation } from './navigation/navigation';
 import { AuthService } from './auth/auth.service';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Navigation, MatIconModule], // RouterOutlet is still needed here
+  imports: [RouterOutlet, Navigation, MatIconModule, MatButtonModule], // RouterOutlet is still needed here
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -22,6 +23,7 @@ export class App implements OnInit {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit() {
+    // Check if the code is running in a browser environment
     if (isPlatformBrowser(this.platformId)) {
       const storedTheme = localStorage.getItem('theme');
       if (storedTheme === 'dark') {
@@ -36,14 +38,12 @@ export class App implements OnInit {
 
   toggleTheme() {
     this.isDarkMode.update(value => !value);
-    if (this.isDarkMode()) {
-      this.renderer.addClass(this.document.documentElement, 'dark-theme');
-      if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId)) {
+      if (this.isDarkMode()) {
+        this.renderer.addClass(this.document.documentElement, 'dark-theme');
         localStorage.setItem('theme', 'dark');
-      }
-    } else {
-      this.renderer.removeClass(this.document.documentElement, 'dark-theme');
-      if (isPlatformBrowser(this.platformId)) {
+      } else {
+        this.renderer.removeClass(this.document.documentElement, 'dark-theme');
         localStorage.setItem('theme', 'light');
       }
     }

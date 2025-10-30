@@ -54,6 +54,7 @@ export class TodoItemComponent {
     const dialogRef = this.dialog.open(DueDateEditorComponent, {
       width: '250px',
       data: { dueDate: this.todo.dueDate?.toDate() },
+      panelClass: 'due-date-editor-dialog',
     });
 
     dialogRef.afterClosed().subscribe(result => {

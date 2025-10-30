@@ -28,16 +28,22 @@ export class DueDateEditorComponent {
   selectedDate: Date | null;
 
   constructor(
-    public dialogRef: MatDialogRef<DueDateEditorComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { dueDate: Date | null }
+    public readonly dialogRef: MatDialogRef<DueDateEditorComponent>,
+    @Inject(MAT_DIALOG_DATA) public readonly data: { dueDate: Date | null }
   ) {
     this.selectedDate = data.dueDate;
   }
 
+  /**
+   * Closes the dialog without saving.
+   */
   onNoClick(): void {
     this.dialogRef.close();
   }
 
+  /**
+   * Closes the dialog and returns the selected date.
+   */
   onSaveClick(): void {
     this.dialogRef.close(this.selectedDate);
   }
