@@ -4,7 +4,7 @@ import { switchMap, filter } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog'; 
 import { Timestamp } from '@angular/fire/firestore';
 
 import { TodoService } from '../todo.service';
@@ -287,7 +287,7 @@ export class TodoStore {
     const currentUser = this.currentUser();
     if (text && currentUser) {
       await this.withLoading('isAddingList', async () => {
-        const newListId = await this.listService.addList(currentUser.uid, text);
+        const newListId = await this.listService.addList(currentUser.uid, text, {});
         this.setSelectedListId(newListId);
         this.setNewListText('');
       });
@@ -358,7 +358,7 @@ export class TodoStore {
 
     await this.withLoading('isSharingList', async () => {
       try {
-        await this.listService.shareList(listId, email);
+        await this.listService.shareList(listId, { [email]: true });
         this.snackBar.open(`List shared with ${email}!`, 'Close', { duration: 3000 });
         this.cancelSharing();
       } catch (error: any) {
@@ -375,7 +375,7 @@ export class TodoStore {
 
     this.state.update(s => ({ ...s, unsharingEmail: email }));
     try {
-      await this.listService.unshareList(listId, email);
+      await this.listService.unshareList(listId, email); // The service will need to use FieldValue.delete()
       this.snackBar.open(`Stopped sharing list with ${email}.`, 'Close', { duration: 3000 });
     } catch (error: any) {
       console.error('Failed to unshare list:', error);

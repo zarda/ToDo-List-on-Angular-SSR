@@ -8,6 +8,6 @@ export interface List {
   ownerEmail: string;
   ownerPhotoURL: string;
   createdAt: Timestamp;
-  sharedWith: string[]; // Array of emails
+  sharedWith: Record<string, boolean>; // Map of emails to true
   collaborators?: User[]; // Array of User objects for display
 }
