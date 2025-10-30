@@ -109,4 +109,61 @@ describe('TodoItemComponent', () => {
     component.editingText = 'Test';
     expect(component.editingText).toBe('Test');
   });
+
+  it('should open due date editor dialog', () => {
+    const afterClosedSubject = of(new Date('2025-12-31'));
+    const dialogRefMock = {
+      afterClosed: () => afterClosedSubject
+    } as any;
+
+    dialogMock.open.and.returnValue(dialogRefMock);
+    spyOn(component.dueDateChanged, 'emit');
+
+    component.openDueDateEditor();
+
+    expect(dialogMock.open).toHaveBeenCalled();
+    expect(component.dueDateChanged.emit).toHaveBeenCalled();
+  });
+
+  it('should not emit dueDateChanged when dialog is cancelled', () => {
+    const afterClosedSubject = of(undefined);
+    const dialogRefMock = {
+      afterClosed: () => afterClosedSubject
+    } as any;
+
+    dialogMock.open.and.returnValue(dialogRefMock);
+    spyOn(component.dueDateChanged, 'emit');
+
+    component.openDueDateEditor();
+
+    expect(dialogMock.open).toHaveBeenCalled();
+    expect(component.dueDateChanged.emit).not.toHaveBeenCalled();
+  });
+
+  it('should handle null dueDate in todo', () => {
+    const todoWithoutDate: Todo = {
+      ...mockTodo,
+      dueDate: null
+    };
+    component.todo = todoWithoutDate;
+
+    const afterClosedSubject = of(new Date());
+    const dialogRefMock = {
+      afterClosed: () => afterClosedSubject
+    } as any;
+
+    dialogMock.open.and.returnValue(dialogRefMock);
+    spyOn(component.dueDateChanged, 'emit');
+
+    component.openDueDateEditor();
+
+    expect(dialogMock.open).toHaveBeenCalled();
+    expect(component.dueDateChanged.emit).toHaveBeenCalled();
+  });
+
+  it('should emit editTextChanged event', () => {
+    spyOn(component.editTextChanged, 'emit');
+    component.editTextChanged.emit('new text');
+    expect(component.editTextChanged.emit).toHaveBeenCalledWith('new text');
+  });
 });

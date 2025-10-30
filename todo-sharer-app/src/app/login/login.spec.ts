@@ -133,4 +133,54 @@ describe('Login', () => {
 
     expect(routerMock.navigate).toHaveBeenCalledWith(['/']);
   }));
+
+  it('should display cancel message when popup is closed by user', fakeAsync(() => {
+    const error = { code: 'auth/popup-closed-by-user', message: 'Popup closed' };
+    authServiceMock.loginWithGoogle.and.rejectWith(error);
+    fixture.detectChanges();
+
+    clickLoginButton();
+    tick();
+    tick();
+    fixture.detectChanges();
+
+    const errorElement = fixture.debugElement.query(By.css('mat-error'));
+    expect(errorElement).toBeTruthy();
+    expect(errorElement.nativeElement.textContent).toContain('Login was cancelled.');
+  }));
+
+  it('should not login if already loading', fakeAsync(() => {
+    authServiceMock.loginWithGoogle.and.returnValue(new Promise(() => {}));
+    fixture.detectChanges();
+
+    // First click starts loading
+    clickLoginButton();
+    tick();
+    expect(authServiceMock.loginWithGoogle).toHaveBeenCalledTimes(1);
+
+    // Second click should be ignored
+    component.login();
+    tick();
+    expect(authServiceMock.loginWithGoogle).toHaveBeenCalledTimes(1);
+  }));
+
+  it('should clear error on new login attempt', fakeAsync(() => {
+    const error = { code: 'auth/some-error', message: 'Error' };
+    authServiceMock.loginWithGoogle.and.rejectWith(error);
+    fixture.detectChanges();
+
+    clickLoginButton();
+    tick();
+    tick();
+    fixture.detectChanges();
+
+    expect((component as any).error()).not.toBeNull();
+
+    // Reset mock for successful login
+    authServiceMock.loginWithGoogle.and.resolveTo();
+    clickLoginButton();
+
+    // Error should be cleared immediately
+    expect((component as any).error()).toBeNull();
+  }));
 });
