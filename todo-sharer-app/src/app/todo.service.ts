@@ -18,12 +18,14 @@ import {
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { Todo, TodoCreate } from './models/todo.model';
+import { AuthService } from './auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TodoService {
   private readonly firestore: Firestore = inject(Firestore);
+  private readonly authService: AuthService = inject(AuthService);
 
   getTodos(listId: string, sortBy: 'order' | 'dueDate' | 'createdAt', direction: 'asc' | 'desc'): Observable<{ loading: boolean, data: Todo[] }> {
     if (!listId) {
@@ -40,6 +42,10 @@ export class TodoService {
   async addTodo(listId: string, text: string): Promise<string> {
     const todosCollection = collection(this.firestore, `lists/${listId}/todos`) as CollectionReference<Todo>;
     const currentTimestamp = serverTimestamp();
+    const user = this.authService.currentUser();
+    if (!user) {
+      throw new Error('User not logged in');
+    }
     const newTodo: TodoCreate = {
       text,
       completed: false,
@@ -47,6 +53,7 @@ export class TodoService {
       updatedAt: null,
       order: Date.now(), // Simple initial order
       dueDate: currentTimestamp,
+      ownerUid: user.uid,
     };
     const docRef = await addDoc(todosCollection, newTodo as WithFieldValue<Todo>);
     return docRef.id;

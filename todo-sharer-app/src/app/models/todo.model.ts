@@ -8,6 +8,7 @@ export interface Todo {
   updatedAt: Timestamp | null;
   dueDate: Timestamp | null;
   order: number;
+  ownerUid: string;
 }
 
 // Type for creating a new to-do, where some fields are set by the server.

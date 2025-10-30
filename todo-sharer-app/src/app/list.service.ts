@@ -86,7 +86,7 @@ export class ListService {
 
       lists.forEach(list => {
         allUids.add(list.ownerUid);
-        Object.keys(list.sharedWith || {}).forEach(email => allEmails.add(email));
+        Object.keys(list.sharedWith || {}).forEach(uid => allUids.add(uid));
       });
 
       // Fetch all required user profiles in one go
@@ -108,7 +108,7 @@ export class ListService {
           ownerEmail: ownerProfile?.email || 'Unknown',
           ownerPhotoURL: ownerProfile?.photoURL || 'assets/default-avatar.png',
           collaborators: Object.keys(list.sharedWith || {})
-            .map(email => profileMapByEmail.get(email))
+            .map(uid => profileMapByUid.get(uid))
             .filter((c): c is User => !!c) ?? [],
         };
         return enrichedList;
@@ -143,7 +143,7 @@ export class ListService {
     // Use an OR query to fetch lists where the user is either the owner or a collaborator
     const q = query(listsCollection, or(
       where('ownerUid', '==', currentUser.uid),
-      where(`sharedWith.${currentUser.email}`, '==', true)
+      where(`sharedWith.${currentUser.uid}`, '==', true)
     ));
 
     return (collectionData(q, { idField: 'id' })).pipe(
@@ -216,11 +216,11 @@ export class ListService {
       throw new Error('You cannot share a list with its owner.');
     }
 
-    await updateDoc(listDoc, { [`sharedWith.${email}`]: true });
+    await updateDoc(listDoc, { [`sharedWith.${userToShareWith.uid}`]: true });
   }
 
-  async unshareList(listId: string, email: string): Promise<void> {
+  async unshareList(listId: string, uid: string): Promise<void> {
     const listDoc = doc(this.firestore, `lists/${listId}`);
-    await updateDoc(listDoc, { [`sharedWith.${email}`]: deleteField() });
+    await updateDoc(listDoc, { [`sharedWith.${uid}`]: deleteField() });
   }
 }
