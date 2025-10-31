@@ -26,7 +26,7 @@ import { AuthService } from '../auth/auth.service';
 export class Navigation {
   protected readonly authService = inject(AuthService);
 
-  logout() {
-    this.authService.logout();
+  async logout() {
+    await this.authService.logout();
   }
 }
