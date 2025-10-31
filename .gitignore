@@ -31,3 +31,6 @@ yarn-error.log*
 # macOS specific
 .DS_Store
 **/.DS_Store
+
+# Claude Code
+.claude/
