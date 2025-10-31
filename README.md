@@ -51,7 +51,7 @@ A modern web application that lets people create, manage, and **share** todo lis
 - **Backend**: Firebase (Google's cloud platform - no server maintenance needed)
 - **Authentication**: Google Sign-In (users login with their Google account)
 - **Database**: Firestore (Real-time cloud database)
-- **Hosting**: Server-Side Rendering for fast initial load
+- **Rendering**: Hybrid SSR/CSR (Server-Side Rendering for login, Client-Side Rendering for interactive todo lists)
 
 ## Why This Architecture?
 
@@ -87,7 +87,8 @@ A modern web application that lets people create, manage, and **share** todo lis
 - ✅ Sharing permissions resolved
 - ✅ Due date editing implemented
 - ✅ Test coverage improved
-- 📊 Version: Early release (0.2.10)
+- ✅ Hybrid SSR/CSR rendering optimized
+- 📊 Version: Early release (0.3.12)
 
 ## User Permissions
 
