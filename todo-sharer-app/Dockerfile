@@ -5,8 +5,9 @@ FROM node:20-slim AS build
 WORKDIR /usr/src/app
 
 # Copy package files for dependency installation
-COPY package.json package-lock.json ./
-RUN npm ci --prefer-offline --no-audit
+COPY package.json ./
+COPY package-lock.json* ./
+RUN npm ci --prefer-offline --no-audit || npm install --no-audit
 
 # Copy application source
 COPY . .
@@ -17,8 +18,9 @@ RUN npm run build
 # Stage 2: Production dependencies
 FROM node:20-slim AS deps
 WORKDIR /usr/src/app
-COPY package.json package-lock.json ./
-RUN npm ci --prefer-offline --no-audit --omit=dev
+COPY package.json ./
+COPY package-lock.json* ./
+RUN npm ci --prefer-offline --no-audit --omit=dev || npm install --omit=dev --no-audit
 
 # Stage 3: Create the production image
 FROM node:20-slim
