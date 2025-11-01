@@ -46,3 +46,9 @@ Thumbs.db
 .firebase
 *-debug.log
 .runtimeconfig.json
+
+# Environment files with actual secrets (if you have backend API keys)
+# Note: Firebase config can be public - it's protected by Security Rules
+.env.build
+.env*.local
+.env.production

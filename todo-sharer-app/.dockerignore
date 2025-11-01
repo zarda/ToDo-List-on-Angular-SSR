@@ -2,6 +2,9 @@
 node_modules
 npm-debug.log
 
+# Important: Include package-lock.json (don't ignore it)
+!package-lock.json
+
 # Build output
 dist
 .angular
