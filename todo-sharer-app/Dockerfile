@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # Stage 1: Build the application
 FROM node:20-slim AS build
 
@@ -6,7 +7,9 @@ WORKDIR /usr/src/app
 
 # Copy package files for dependency installation
 COPY package*.json ./
-RUN npm ci --prefer-offline --no-audit 2>/dev/null || npm install --no-audit
+# Use BuildKit cache mount for npm cache
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --no-audit 2>/dev/null || npm install --no-audit
 
 # Copy application source
 COPY . .
@@ -18,7 +21,9 @@ RUN npm run build
 FROM node:20-slim AS deps
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN npm ci --prefer-offline --no-audit --omit=dev 2>/dev/null || npm install --omit=dev --no-audit
+# Use BuildKit cache mount for npm cache
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --no-audit --omit=dev 2>/dev/null || npm install --omit=dev --no-audit
 
 # Stage 3: Create the production image
 FROM node:20-slim
