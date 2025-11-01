@@ -1,0 +1,61 @@
+# This file specifies files that are intentionally untracked by git and should be
+# ignored by gcloud as well. This reduces upload time and image size.
+
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build artifacts (will be built in Cloud Build)
+dist/
+.angular/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD files (not needed in deployment)
+.github/
+.gitlab-ci.yml
+
+# Testing
+coverage/
+.nyc_output/
+*.spec.ts
+karma.conf.js
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+docs/
+
+# Environment files (use Secret Manager instead)
+.env
+.env.local
+.env.*.local
+
+# Firebase local emulator data
+.firebase/
+
+# Development files
+src/
+tsconfig.json
+tsconfig.app.json
+tsconfig.spec.json
+angular.json
+
+# Docker files (if deploying pre-built image)
+Dockerfile
+.dockerignore
+
+# Cloud Build (already on GCP)
+cloudbuild.yaml

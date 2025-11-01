@@ -1,16 +1,53 @@
 # Stage 1: Build the application
 FROM node:20-slim AS build
+
+# Install build dependencies
 WORKDIR /usr/src/app
+
+# Copy package files and install dependencies
+# Using separate COPY commands for better layer caching
 COPY package*.json ./
-RUN npm install
+RUN npm ci --prefer-offline --no-audit
+
+# Copy application source
 COPY . .
+
+# Build the application
 RUN npm run build
 
-# Stage 2: Create the production image
-FROM node:20-slim
+# Stage 2: Production dependencies
+FROM node:20-slim AS deps
 WORKDIR /usr/src/app
-COPY --from=build /usr/src/app/dist ./dist
 COPY package*.json ./
-RUN npm install --omit=dev
+RUN npm ci --prefer-offline --no-audit --omit=dev
+
+# Stage 3: Create the production image
+FROM node:20-slim
+
+# Set NODE_ENV to production
+ENV NODE_ENV=production \
+    PORT=8080
+
+# Create a non-root user for security
+RUN groupadd -g 1001 nodejs && \
+    useradd -r -u 1001 -g nodejs nodejs
+
+WORKDIR /usr/src/app
+
+# Copy built application from build stage
+COPY --from=build --chown=nodejs:nodejs /usr/src/app/dist ./dist
+
+# Copy production dependencies from deps stage
+COPY --from=deps --chown=nodejs:nodejs /usr/src/app/node_modules ./node_modules
+
+# Copy package.json for metadata
+COPY --chown=nodejs:nodejs package*.json ./
+
+# Switch to non-root user
+USER nodejs
+
+# Expose port
 EXPOSE 8080
-CMD [ "npm", "run", "serve:ssr" ]
+
+# Start the application
+CMD [ "node", "dist/todo-sharer-app/server/server.mjs" ]

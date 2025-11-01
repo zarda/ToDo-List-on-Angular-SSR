@@ -1,0 +1,39 @@
+# Node modules
+node_modules
+npm-debug.log
+
+# Build output
+dist
+.angular
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Git
+.git
+.gitignore
+
+# Testing
+coverage
+.nyc_output
+*.spec.ts
+
+# Environment files
+.env
+.env.local
+
+# Documentation
+README.md
+*.md
+docs
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Development files
+karma.conf.js
+tsconfig.spec.json

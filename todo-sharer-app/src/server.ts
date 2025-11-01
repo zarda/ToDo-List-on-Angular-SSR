@@ -2,12 +2,27 @@ import { AngularNodeAppEngine, createNodeRequestHandler, isMainModule, writeResp
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
+import compression from 'compression'
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url))
 const browserDistFolder = resolve(serverDistFolder, '../browser')
 
 const app = express()
 const angularApp = new AngularNodeAppEngine()
+
+/**
+ * Enable gzip/brotli compression for all responses
+ * Reduces bandwidth usage by 60-80% for text-based assets
+ */
+app.use(compression({
+	filter: (req: express.Request, res: express.Response) => {
+		if (req.headers['x-no-compression']) {
+			return false
+		}
+		return compression.filter(req, res)
+	},
+	level: 6 // Balance between compression ratio and CPU usage
+}))
 
 /**
  * Serve static files from /browser
