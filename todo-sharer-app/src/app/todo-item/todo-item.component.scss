@@ -62,13 +62,14 @@ button.due-date-container {
   // Custom button styles
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0 0.75rem;
-  border-radius: 16px;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
   background-color: var(--mat-sys-surface-container-high);
   transition: all 0.2s ease;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   cursor: pointer;
+  min-width: 65px;
 
   &:hover:not(:disabled) {
     background-color: var(--mat-sys-surface-container-highest);
@@ -94,22 +95,10 @@ button.due-date-container {
     background-color: rgba(255, 152, 0, 0.1);
     border-color: var(--mat-sys-tertiary);
   }
-
-  .edit-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-  }
-
-  &:hover .edit-icon {
-    opacity: 1;
-  }
 }
 
 .due-date-text {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: var(--mat-sys-on-surface-variant);
   font-weight: 500;
   white-space: nowrap;
@@ -240,28 +229,15 @@ button[mat-icon-button] {
 
   // Due date container - compact mobile version
   .todo-item-content button.due-date-container {
-    padding: 0.2rem 0.4rem !important;
-    gap: 0.2rem !important;
+    padding: 0.25rem 0.5rem !important;
     border-width: 1px !important;
     border-radius: 12px !important;
-
-    .status-icon {
-      font-size: 14px !important;
-      width: 14px !important;
-      height: 14px !important;
-    }
+    min-width: 70px !important;
 
     .due-date-text {
-      font-size: 0.7rem !important;
+      font-size: 0.75rem !important;
       font-weight: 400 !important;
       line-height: 1.2 !important;
-    }
-
-    .edit-icon {
-      font-size: 14px !important;
-      width: 14px !important;
-      height: 14px !important;
-      margin-left: 0.1rem !important;
     }
   }
 }

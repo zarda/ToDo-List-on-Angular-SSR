@@ -9,11 +9,9 @@ import { FormsModule } from '@angular/forms';
 import { A11yModule } from '@angular/cdk/a11y';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-
+import type { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 import { Todo } from '../models/todo.model';
-import { DueDateEditorComponent } from '../due-date-editor/due-date-editor.component';
 
 @Component({
   selector: 'app-todo-item',
@@ -29,7 +27,6 @@ import { DueDateEditorComponent } from '../due-date-editor/due-date-editor.compo
     A11yModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatDialogModule,
   ],
   templateUrl: './todo-item.component.html',
   styleUrl: './todo-item.component.scss',
@@ -48,20 +45,17 @@ export class TodoItemComponent {
   @Output() editTextChanged = new EventEmitter<string>();
   @Output() dueDateChanged = new EventEmitter<{ todoId: string; dueDate: Date | null }>();
 
-  constructor(public dialog: MatDialog) {}
+  private pendingDate: Date | null = null;
 
-  openDueDateEditor(): void {
-    const dialogRef = this.dialog.open(DueDateEditorComponent, {
-      width: '250px',
-      data: { dueDate: this.todo.dueDate?.toDate() },
-      panelClass: 'due-date-editor-dialog',
-    });
+  onDateChange(event: MatDatepickerInputEvent<Date>): void {
+    this.pendingDate = event.value;
+  }
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result !== undefined) {
-        this.dueDateChanged.emit({ todoId: this.todo.id, dueDate: result });
-      }
-    });
+  onDatePickerClosed(): void {
+    if (this.pendingDate !== null) {
+      this.dueDateChanged.emit({ todoId: this.todo.id, dueDate: this.pendingDate });
+      this.pendingDate = null;
+    }
   }
 
   getDueDateClass(): string {
@@ -90,5 +84,30 @@ export class TodoItemComponent {
       return 'warning';
     }
     return 'schedule';
+  }
+
+  getDueDateText(): string {
+    if (this.todo.dueDate) {
+      const date = this.todo.dueDate.toDate();
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+    return 'Unknown';
+  }
+
+  getDueDateAriaLabel(): string {
+    if (this.todo.dueDate) {
+      const date = this.todo.dueDate.toDate();
+      const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return `Edit due date: ${dateStr}`;
+    }
+    return 'Add due date';
+  }
+
+  isOverdue(): boolean {
+    return this.getDueDateClass() === 'overdue';
+  }
+
+  isDueSoon(): boolean {
+    return this.getDueDateClass() === 'due-soon';
   }
 }

@@ -52,7 +52,7 @@ export class TodoService {
       createdAt: currentTimestamp,
       updatedAt: null,
       order: Date.now(), // Simple initial order
-      dueDate: currentTimestamp,
+      dueDate: null,
       ownerUid: user.uid,
     };
     const docRef = await addDoc(todosCollection, newTodo as WithFieldValue<Todo>);

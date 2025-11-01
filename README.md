@@ -9,11 +9,12 @@ A modern web application that lets people create, manage, and **share** todo lis
 ### 1. Personal Task Management
 
 - Create multiple todo lists (e.g., "Work Projects", "Home Chores", "Shopping")
-- Add tasks with due dates
+- Add tasks with optional due dates (click date button to set via calendar picker)
 - Check off completed items
 - Drag-and-drop to reorder tasks
 - Search and filter tasks
 - Switch between light/dark themes
+- Visual indicators for overdue and due-soon tasks
 
 ### 2. Team Collaboration (Main Innovation)
 
@@ -85,10 +86,11 @@ A modern web application that lets people create, manage, and **share** todo lis
 - ✅ Fully functional core features
 - ✅ Working theme switcher (light/dark)
 - ✅ Sharing permissions resolved
-- ✅ Due date editing implemented
+- ✅ Inline calendar picker for due dates
+- ✅ Visual status indicators (overdue/due soon)
 - ✅ Test coverage improved
 - ✅ Hybrid SSR/CSR rendering optimized
-- 📊 Version: Early release (0.3.12)
+- 📊 Version: Early release (0.3.13)
 
 ## User Permissions
 
@@ -119,9 +121,10 @@ Each list contains:
 Each task contains:
 - Task text
 - Completion status
-- Due date (optional)
+- Due date (optional, defaults to "Unknown" until set)
 - Created/updated timestamps
 - Custom order position
+- Visual status indicators (overdue, due soon)
 
 ## Security Features
 

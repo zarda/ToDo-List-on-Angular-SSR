@@ -90,19 +90,6 @@ mat-list-item {
   opacity: 0.15 !important;
 }
 
-.due-date-editor-dialog .mat-dialog-container {
-  background-color: white;
-  overflow: hidden;
-}
-
-.due-date-editor-dialog .mat-mdc-dialog-surface {
-  overflow: hidden;
-}
-
-.due-date-editor-dialog .mat-calendar {
-  background-color: white;
-}
-
 /* Enhanced drag-and-drop styling */
 .cdk-drag-preview {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
