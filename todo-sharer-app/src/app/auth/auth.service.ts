@@ -1,6 +1,6 @@
 import { Injectable, inject, Signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Auth, GoogleAuthProvider, signInWithPopup, signOut, user, User as AuthUser } from '@angular/fire/auth';
+import { Auth, GoogleAuthProvider, OAuthProvider, signInWithPopup, signOut, user, User as AuthUser } from '@angular/fire/auth';
 import { collection, doc, docData, Firestore, setDoc, DocumentData } from '@angular/fire/firestore';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Observable, of, map } from 'rxjs';
@@ -56,6 +56,21 @@ export class AuthService {
       await this.router.navigate(['/']); // Redirect to the main page after login
     } catch (error) {
       console.error('Login failed:', error);
+      throw error; // Re-throw the error for the component to handle
+    }
+  }
+
+  /**
+   * Initiates the Microsoft/Azure login process.
+   */
+  async loginWithMicrosoft(): Promise<void> {
+    try {
+      const provider = new OAuthProvider('microsoft.com');
+      const credential = await signInWithPopup(this.auth, provider);
+      await this.updateUserData(credential.user); // Ensure user data is in Firestore
+      await this.router.navigate(['/']); // Redirect to the main page after login
+    } catch (error) {
+      console.error('Microsoft login failed:', error);
       throw error; // Re-throw the error for the component to handle
     }
   }

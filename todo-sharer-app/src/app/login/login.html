@@ -5,12 +5,27 @@
       <mat-card-subtitle>Please login to continue</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <button mat-raised-button color="primary" (click)="login()" [disabled]="loading()">
-        <span [hidden]="loading()" class="button-content">
-          <img src="/assets/google-logo.svg" alt="Google logo" />
-          <span>Login with Google</span>
-        </span>
-      </button>
+      <div class="padding-0_5rem">
+        <button mat-raised-button color="primary" (click)="login()" [disabled]="loading()">
+          <span [hidden]="loading()" class="button-content">
+            <img src="/assets/google-logo.svg" alt="Google logo" />
+            <span>Login with Google</span>
+          </span>
+        </button>
+      </div>
+      <div class="padding-0_5rem">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="loginWithMicrosoft()"
+          [disabled]="loading()"
+        >
+          <span [hidden]="loading()" class="button-content">
+            <img src="/assets/microsoft-logo.svg" alt="Microsoft logo" />
+            <span>Login with Microsoft</span>
+          </span>
+        </button>
+      </div>
       <div class="flex-center">
         <span [hidden]="!loading()">
           <mat-spinner diameter="40" />
