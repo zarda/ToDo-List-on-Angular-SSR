@@ -367,28 +367,22 @@ describe('TodoStore', () => {
       });
     });
 
-    describe('deleteList', () => {
+    describe('confirmDeleteList', () => {
       it('should not delete if no list selected', async () => {
-        store.setSelectedListId(null);
-        await store.deleteList();
-        expect(dialogMock.open).not.toHaveBeenCalled();
+        store['state'].update(s => ({ ...s, confirmingDeleteListId: null }));
+        await store.confirmDeleteList();
+        expect(listServiceMock.deleteListAndTodos).not.toHaveBeenCalled();
       });
 
-      it('should open confirm dialog for delete', async () => {
-        const afterClosedSubject = new Subject();
-        const dialogRefMock = {
-          afterClosed: () => afterClosedSubject.asObservable()
-        } as MatDialogRef<any>;
-
-        dialogMock.open.and.returnValue(dialogRefMock);
+      it('should delete list when confirmed', async () => {
+        listServiceMock.deleteListAndTodos.and.returnValue(Promise.resolve());
         store.setSelectedListId('list-123');
+        store['state'].update(s => ({ ...s, confirmingDeleteListId: 'list-123' }));
 
-        const deletePromise = store.deleteList();
-        afterClosedSubject.next(false);
-        afterClosedSubject.complete();
+        await store.confirmDeleteList();
 
-        await deletePromise;
-        expect(dialogMock.open).toHaveBeenCalled();
+        expect(listServiceMock.deleteListAndTodos).toHaveBeenCalledWith('list-123');
+        expect(snackBarMock.open).toHaveBeenCalled();
       });
     });
 
@@ -475,10 +469,19 @@ describe('TodoStore', () => {
       });
     });
 
-    describe('deleteTodo', () => {
+    describe('confirmDeleteTodo', () => {
+      it('should not delete if no todo is being confirmed', async () => {
+        store.setSelectedListId('list-123');
+        store['state'].update(s => ({ ...s, confirmingDeleteTodoId: null }));
+        await store.confirmDeleteTodo();
+        expect(todoServiceMock.deleteTodo).not.toHaveBeenCalled();
+      });
+
       it('should not delete if no list selected', async () => {
-        await store.deleteTodo('todo-123');
-        expect(dialogMock.open).not.toHaveBeenCalled();
+        store.setSelectedListId(null);
+        store['state'].update(s => ({ ...s, confirmingDeleteTodoId: 'todo-123' }));
+        await store.confirmDeleteTodo();
+        expect(todoServiceMock.deleteTodo).not.toHaveBeenCalled();
       });
     });
 
@@ -526,6 +529,263 @@ describe('TodoStore', () => {
         await store.drop(event);
         expect(todoServiceMock.updateTodos).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  // Test drag and drop functionality
+  describe('Drag and Drop Functionality', () => {
+    let mockTodos: any[];
+
+    beforeEach(() => {
+      mockTodos = [
+        { id: '1', text: 'First', completed: false, order: 1000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null },
+        { id: '2', text: 'Second', completed: false, order: 2000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null },
+        { id: '3', text: 'Third', completed: false, order: 3000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null },
+        { id: '4', text: 'Fourth', completed: false, order: 4000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null }
+      ];
+      store.setSelectedListId('list-123');
+      store['state'].update(s => ({ ...s, todos: mockTodos }));
+      todoServiceMock.updateTodos.and.returnValue(Promise.resolve());
+    });
+
+    it('should do nothing if item has not moved', async () => {
+      const event = {
+        previousIndex: 1,
+        currentIndex: 1,
+        item: { data: mockTodos[1] }
+      } as any;
+
+      await store.drop(event);
+      expect(todoServiceMock.updateTodos).not.toHaveBeenCalled();
+    });
+
+    it('should update only the moved item when dragging first item to second position', async () => {
+      const event = {
+        previousIndex: 0,
+        currentIndex: 1,
+        item: { data: mockTodos[0] }
+      } as any;
+
+      await store.drop(event);
+
+      expect(todoServiceMock.updateTodos).toHaveBeenCalledTimes(1);
+      const updates = todoServiceMock.updateTodos.calls.mostRecent().args[1];
+      expect(updates.length).toBe(1);
+      expect(updates[0].id).toBe('1');
+      // Should be midpoint between 2000 and 3000
+      expect(updates[0].order).toBe(2500);
+    });
+
+    it('should update only the moved item when dragging last item to first position', async () => {
+      const event = {
+        previousIndex: 3,
+        currentIndex: 0,
+        item: { data: mockTodos[3] }
+      } as any;
+
+      await store.drop(event);
+
+      expect(todoServiceMock.updateTodos).toHaveBeenCalledTimes(1);
+      const updates = todoServiceMock.updateTodos.calls.mostRecent().args[1];
+      expect(updates.length).toBe(1);
+      expect(updates[0].id).toBe('4');
+      // Should be 1000 - 1000 = 0
+      expect(updates[0].order).toBe(0);
+    });
+
+    it('should update only the moved item when dragging to the end', async () => {
+      const event = {
+        previousIndex: 0,
+        currentIndex: 3,
+        item: { data: mockTodos[0] }
+      } as any;
+
+      await store.drop(event);
+
+      expect(todoServiceMock.updateTodos).toHaveBeenCalledTimes(1);
+      const updates = todoServiceMock.updateTodos.calls.mostRecent().args[1];
+      expect(updates.length).toBe(1);
+      expect(updates[0].id).toBe('1');
+      // Should be 4000 + 1000 = 5000
+      expect(updates[0].order).toBe(5000);
+    });
+
+    it('should move second item to third position correctly', async () => {
+      const event = {
+        previousIndex: 1,
+        currentIndex: 2,
+        item: { data: mockTodos[1] }
+      } as any;
+
+      await store.drop(event);
+
+      expect(todoServiceMock.updateTodos).toHaveBeenCalledTimes(1);
+      const updates = todoServiceMock.updateTodos.calls.mostRecent().args[1];
+      expect(updates.length).toBe(1);
+      expect(updates[0].id).toBe('2');
+      // Should be midpoint between 3000 and 4000
+      expect(updates[0].order).toBe(3500);
+    });
+
+    it('should trigger full reorder when there is no gap between items', async () => {
+      // Create todos with no gap
+      const tightTodos = [
+        { id: '1', text: 'First', completed: false, order: 1000, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null },
+        { id: '2', text: 'Second', completed: false, order: 1001, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null },
+        { id: '3', text: 'Third', completed: false, order: 1002, createdAt: Timestamp.now(), dueDate: null, ownerUid: 'user-123', updatedAt: null }
+      ];
+      store['state'].update(s => ({ ...s, todos: tightTodos }));
+
+      const event = {
+        previousIndex: 0,
+        currentIndex: 1,
+        item: { data: tightTodos[0] }
+      } as any;
+
+      await store.drop(event);
+
+      expect(todoServiceMock.updateTodos).toHaveBeenCalledTimes(1);
+      const updates = todoServiceMock.updateTodos.calls.mostRecent().args[1];
+      // Should update all items with new spacing
+      expect(updates.length).toBe(3);
+      expect(updates[0].order).toBe(1000);
+      expect(updates[1].order).toBe(2000);
+      expect(updates[2].order).toBe(3000);
+    });
+
+    it('should handle optimistic update correctly', async () => {
+      const event = {
+        previousIndex: 0,
+        currentIndex: 2,
+        item: { data: mockTodos[0] }
+      } as any;
+
+      const dropPromise = store.drop(event);
+
+      // Check that the todos are immediately reordered in the UI
+      const currentTodos = store.todos();
+      expect(currentTodos[0].id).toBe('2');
+      expect(currentTodos[1].id).toBe('3');
+      expect(currentTodos[2].id).toBe('1');
+
+      await dropPromise;
+    });
+
+    it('should revert optimistic update on error', async () => {
+      todoServiceMock.updateTodos.and.returnValue(Promise.reject(new Error('Network error')));
+
+      const event = {
+        previousIndex: 0,
+        currentIndex: 2,
+        item: { data: mockTodos[0] }
+      } as any;
+
+      await store.drop(event);
+
+      // Should revert to original order
+      const currentTodos = store.todos();
+      expect(currentTodos[0].id).toBe('1');
+      expect(currentTodos[1].id).toBe('2');
+      expect(currentTodos[2].id).toBe('3');
+      expect(snackBarMock.open).toHaveBeenCalledWith('Could not save new order. Please try again.', 'Close', { duration: 4000 });
+    });
+
+    it('should handle drag from middle to beginning', async () => {
+      const event = {
+        previousIndex: 2,
+        currentIndex: 0,
+        item: { data: mockTodos[2] }
+      } as any;
+
+      await store.drop(event);
+
+      expect(todoServiceMock.updateTodos).toHaveBeenCalledTimes(1);
+      const updates = todoServiceMock.updateTodos.calls.mostRecent().args[1];
+      expect(updates.length).toBe(1);
+      expect(updates[0].id).toBe('3');
+      expect(updates[0].order).toBe(0); // 1000 - 1000
+    });
+
+    it('should handle drag from middle to end', async () => {
+      const event = {
+        previousIndex: 1,
+        currentIndex: 3,
+        item: { data: mockTodos[1] }
+      } as any;
+
+      await store.drop(event);
+
+      expect(todoServiceMock.updateTodos).toHaveBeenCalledTimes(1);
+      const updates = todoServiceMock.updateTodos.calls.mostRecent().args[1];
+      expect(updates.length).toBe(1);
+      expect(updates[0].id).toBe('2');
+      expect(updates[0].order).toBe(5000); // 4000 + 1000
+    });
+
+    it('should calculate correct order when moving backwards in the list', async () => {
+      const event = {
+        previousIndex: 3,
+        currentIndex: 1,
+        item: { data: mockTodos[3] }
+      } as any;
+
+      await store.drop(event);
+
+      expect(todoServiceMock.updateTodos).toHaveBeenCalledTimes(1);
+      const updates = todoServiceMock.updateTodos.calls.mostRecent().args[1];
+      expect(updates.length).toBe(1);
+      expect(updates[0].id).toBe('4');
+      // Should be midpoint between 1000 and 2000
+      expect(updates[0].order).toBe(1500);
+    });
+
+    it('should work with single item list', async () => {
+      const singleTodo = [mockTodos[0]];
+      store['state'].update(s => ({ ...s, todos: singleTodo }));
+
+      const event = {
+        previousIndex: 0,
+        currentIndex: 0,
+        item: { data: singleTodo[0] }
+      } as any;
+
+      await store.drop(event);
+
+      // Should do nothing for single item
+      expect(todoServiceMock.updateTodos).not.toHaveBeenCalled();
+    });
+
+    it('should handle two item list correctly when swapping', async () => {
+      const twoTodos = [mockTodos[0], mockTodos[1]];
+      store['state'].update(s => ({ ...s, todos: twoTodos }));
+
+      const event = {
+        previousIndex: 0,
+        currentIndex: 1,
+        item: { data: twoTodos[0] }
+      } as any;
+
+      await store.drop(event);
+
+      expect(todoServiceMock.updateTodos).toHaveBeenCalledTimes(1);
+      const updates = todoServiceMock.updateTodos.calls.mostRecent().args[1];
+      expect(updates.length).toBe(1);
+      expect(updates[0].id).toBe('1');
+      expect(updates[0].order).toBe(3000); // 2000 + 1000
+    });
+
+    it('should use correct listId when updating todos', async () => {
+      store.setSelectedListId('my-specific-list');
+
+      const event = {
+        previousIndex: 0,
+        currentIndex: 1,
+        item: { data: mockTodos[0] }
+      } as any;
+
+      await store.drop(event);
+
+      expect(todoServiceMock.updateTodos).toHaveBeenCalledWith('my-specific-list', jasmine.any(Array));
     });
   });
 

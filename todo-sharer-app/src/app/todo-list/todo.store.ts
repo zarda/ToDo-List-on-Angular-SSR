@@ -503,26 +503,87 @@ export class TodoStore {
     const listId = this.selectedListId();
     if (!listId) return;
 
+    // If the item hasn't moved, do nothing
+    if (event.previousIndex === event.currentIndex) return;
+
+    // Calculate the order update before the optimistic update
+    const allTodos = this.allTodos();
+    const visibleTodos = this.todos();
+    const itemToMove = allTodos.find(t => t.id === visibleTodos[event.previousIndex].id);
+    if (!itemToMove) return;
+
+    // Find where we're moving from and to
+    const fromIndex = allTodos.findIndex(t => t.id === itemToMove.id);
+    const targetItem = visibleTodos[event.currentIndex];
+    const toIndex = allTodos.findIndex(t => t.id === targetItem.id);
+
+    // Create a reordered copy to determine final positions
+    const reorderedTodos = [...allTodos];
+    moveItemInArray(reorderedTodos, fromIndex, toIndex);
+
+    // Calculate the new order value for the moved item
+    let updates: { id: string; order: number }[];
+    const MIN_GAP = 1;
+    const REORDER_SPACING = 1000;
+
+    // Find the new position of the moved item in the reordered array
+    const newPosition = reorderedTodos.findIndex(t => t.id === itemToMove.id);
+
+    if (reorderedTodos.length === 1) {
+      // Single item, no update needed
+      return;
+    } else if (newPosition === 0) {
+      // Moving to the beginning
+      const nextItem = reorderedTodos[1];
+      const newOrder = nextItem.order - REORDER_SPACING;
+      updates = [{ id: itemToMove.id, order: newOrder }];
+    } else if (newPosition === reorderedTodos.length - 1) {
+      // Moving to the end
+      const prevItem = reorderedTodos[reorderedTodos.length - 2];
+      const newOrder = prevItem.order + REORDER_SPACING;
+      updates = [{ id: itemToMove.id, order: newOrder }];
+    } else {
+      // Moving to the middle - calculate order based on neighbors
+      const prevItem = reorderedTodos[newPosition - 1];
+      const nextItem = reorderedTodos[newPosition + 1];
+      const gap = nextItem.order - prevItem.order;
+
+      // Check if there's enough gap to insert (need at least 2 to have room for a value in between)
+      if (gap > MIN_GAP + 1) {
+        // There's room, calculate midpoint
+        const newOrder = Math.floor((prevItem.order + nextItem.order) / 2);
+        updates = [{ id: itemToMove.id, order: newOrder }];
+      } else {
+        // Not enough room, need to reorder all items
+        updates = reorderedTodos.map((todo, index) => ({
+          id: todo.id,
+          order: (index + 1) * REORDER_SPACING,
+        }));
+      }
+    }
+
     await this._withOptimisticTodoUpdate(
       (currentTodos) => {
         const allTodosCopy = [...currentTodos];
-        const visibleTodos = this.todos(); // Use the computed visible todos
+        const visibleTodos = this.todos();
 
         const itemToMove = visibleTodos[event.previousIndex];
         const fromIndex = allTodosCopy.findIndex(t => t.id === itemToMove.id);
-        let toIndex = allTodosCopy.findIndex(t => t.id === visibleTodos[event.currentIndex].id);
+        const toIndex = allTodosCopy.findIndex(t => t.id === visibleTodos[event.currentIndex].id);
 
-        if (event.previousIndex < event.currentIndex) {
-          toIndex++;
-        }
         moveItemInArray(allTodosCopy, fromIndex, toIndex);
+
+        // Apply the order updates to the optimistic copy
+        for (const update of updates) {
+          const todo = allTodosCopy.find(t => t.id === update.id);
+          if (todo) {
+            todo.order = update.order;
+          }
+        }
+
         return allTodosCopy;
       },
       async () => {
-        const updates = this.allTodos().map((todo, index) => ({
-          id: todo.id,
-          order: (index + 1) * 1000, // Re-space all items
-        }));
         await this.todoService.updateTodos(listId, updates);
       },
       { errorMsg: 'Could not save new order. Please try again.' }
