@@ -56,7 +56,7 @@ export class Login {
   /**
    * Initiates the Google login process.
    */
-  async login(): Promise<void> {
+  async loginWithGoogle(): Promise<void> {
     if (this.loading()) return;
     this.error.set(null);
     this.loading.set(true);

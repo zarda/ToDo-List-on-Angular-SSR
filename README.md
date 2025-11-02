@@ -90,7 +90,7 @@ A modern web application that lets people create, manage, and **share** todo lis
 - ✅ Visual status indicators (overdue/due soon)
 - ✅ Test coverage improved
 - ✅ Hybrid SSR/CSR rendering optimized
-- 📊 Version: Early release (0.3.13)
+- 📊 Version: Early release (0.4.16)
 
 ## User Permissions
 

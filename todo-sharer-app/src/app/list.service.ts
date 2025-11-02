@@ -16,7 +16,6 @@ import {
   writeBatch,
   or,
   CollectionReference,
-  Query,
   DocumentData,
   FieldValue,
 } from '@angular/fire/firestore';

@@ -1,6 +1,6 @@
 import { Component, inject, signal, OnInit, OnDestroy, Renderer2, Inject, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { RouterOutlet, Router } from '@angular/router';
 import { Navigation } from './navigation/navigation';
 import { AuthService } from './auth/auth.service';
 import { MatIconModule } from '@angular/material/icon';

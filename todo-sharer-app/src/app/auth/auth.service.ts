@@ -1,7 +1,7 @@
 import { Injectable, inject, Signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth, GoogleAuthProvider, OAuthProvider, signInWithPopup, signOut, user, User as AuthUser } from '@angular/fire/auth';
-import { collection, doc, docData, Firestore, setDoc, DocumentData } from '@angular/fire/firestore';
+import { doc, docData, Firestore, setDoc } from '@angular/fire/firestore';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Observable, of, map } from 'rxjs';
 import { switchMap, shareReplay } from 'rxjs/operators';
@@ -14,7 +14,6 @@ export class AuthService {
   private readonly auth: Auth = inject(Auth);
   private readonly firestore: Firestore = inject(Firestore);
   private readonly router: Router = inject(Router);
-  private readonly usersCollection = collection(this.firestore, 'users');
 
   /**
    * An observable that emits the currently authenticated user's profile from Firestore,
