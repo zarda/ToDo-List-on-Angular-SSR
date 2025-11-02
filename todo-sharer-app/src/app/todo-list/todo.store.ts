@@ -1,10 +1,9 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { switchMap, filter } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { of, combineLatest } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog'; 
 import { Timestamp } from '@angular/fire/firestore';
 
 import { TodoService } from '../todo.service';
@@ -12,8 +11,6 @@ import { Todo } from '../models/todo.model';
 import { ListService } from '../list.service';
 import { List } from '../list';
 import { AuthService } from '../auth/auth.service';
-import { firstValueFrom } from 'rxjs';
-import { ConfirmDialogComponent } from './confirm-dialog.component';
 
 interface TodoState {
   lists: List[];
@@ -41,6 +38,9 @@ interface TodoState {
   searchTerm: string;
   editingTodoId: string | null;
   editingTodoText: string;
+  confirmingDeleteListId: string | null;
+  confirmingDeleteTodoId: string | null;
+  confirmingClearCompleted: boolean;
 }
 
 @Injectable()
@@ -50,7 +50,6 @@ export class TodoStore {
   private readonly listService = inject(ListService);
   private readonly authService = inject(AuthService);
   private readonly snackBar = inject(MatSnackBar);
-  private readonly dialog = inject(MatDialog);
 
   private readonly state = signal<TodoState>({
     lists: [],
@@ -78,6 +77,9 @@ export class TodoStore {
     searchTerm: '',
     editingTodoId: null,
     editingTodoText: '',
+    confirmingDeleteListId: null,
+    confirmingDeleteTodoId: null,
+    confirmingClearCompleted: false,
   });
 
   // Selectors
@@ -106,6 +108,9 @@ export class TodoStore {
   readonly searchTerm = computed(() => this.state().searchTerm);
   readonly editingTodoId = computed(() => this.state().editingTodoId);
   readonly editingTodoText = computed(() => this.state().editingTodoText);
+  readonly confirmingDeleteListId = computed(() => this.state().confirmingDeleteListId);
+  readonly confirmingDeleteTodoId = computed(() => this.state().confirmingDeleteTodoId);
+  readonly confirmingClearCompleted = computed(() => this.state().confirmingClearCompleted);
 
   readonly selectedList = computed(() => {
     const listId = this.selectedListId();
@@ -319,26 +324,26 @@ export class TodoStore {
     }
   }
 
-  async deleteList(): Promise<void> {
+  startDeleteList(): void {
     const listId = this.selectedListId();
+    if (listId) {
+      this.state.update(s => ({ ...s, confirmingDeleteListId: listId }));
+    }
+  }
+
+  cancelDeleteList(): void {
+    this.state.update(s => ({ ...s, confirmingDeleteListId: null }));
+  }
+
+  async confirmDeleteList(): Promise<void> {
+    const listId = this.confirmingDeleteListId();
     if (!listId) return;
 
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '350px',
-      data: {
-        title: 'Delete List',
-        message: 'Are you sure you want to delete this list? This action cannot be undone.'
-      }
+    await this.withLoading('isDeletingList', async () => {
+      await this.listService.deleteListAndTodos(listId);
+      this.state.update(s => ({ ...s, isEditingList: false, confirmingDeleteListId: null }));
+      this.snackBar.open('List deleted.', 'Close', { duration: 3000 });
     });
-
-    const result = await firstValueFrom(dialogRef.afterClosed().pipe(filter(res => !!res)));
-    if (result) {
-      await this.withLoading('isDeletingList', async () => {
-        await this.listService.deleteListAndTodos(listId);
-        this.state.update(s => ({ ...s, isEditingList: false }));
-        this.snackBar.open('List deleted.', 'Close', { duration: 3000 });
-      });
-    }
   }
 
   startSharing(): void {
@@ -386,27 +391,25 @@ export class TodoStore {
     }
   }
 
-  async deleteTodo(todoId: string): Promise<void> {
-    const listId = this.selectedListId();
-    const todoToDelete = this.allTodos().find(t => t.id === todoId);
-    if (!listId || !todoToDelete) return;
-    
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '350px',
-      data: {
-        title: 'Delete To-Do',
-        message: 'Are you sure you want to delete this to-do?'
-      }
-    });
+  startDeleteTodo(todoId: string): void {
+    this.state.update(s => ({ ...s, confirmingDeleteTodoId: todoId }));
+  }
 
-    const result = await firstValueFrom(dialogRef.afterClosed().pipe(filter(res => !!res)));
-    if (result) {
-      await this._withOptimisticTodoUpdate(
-        (todos) => todos.filter(t => t.id !== todoId),
-        () => this.todoService.deleteTodo(listId, todoId),
-        { errorMsg: 'Failed to delete to-do. Please try again.' }
-      );
-    }
+  cancelDeleteTodo(): void {
+    this.state.update(s => ({ ...s, confirmingDeleteTodoId: null }));
+  }
+
+  async confirmDeleteTodo(): Promise<void> {
+    const todoId = this.confirmingDeleteTodoId();
+    const listId = this.selectedListId();
+    if (!todoId || !listId) return;
+
+    this.state.update(s => ({ ...s, confirmingDeleteTodoId: null }));
+    await this._withOptimisticTodoUpdate(
+      (todos) => todos.filter(t => t.id !== todoId),
+      () => this.todoService.deleteTodo(listId, todoId),
+      { errorMsg: 'Failed to delete to-do. Please try again.' }
+    );
   }
 
   async toggleTodoCompletion({ todoId, completed }: { todoId: string; completed: boolean }): Promise<void> {
@@ -466,35 +469,34 @@ export class TodoStore {
     );
   }
 
-  async clearCompleted(): Promise<void> {
-    const listId = this.selectedListId();
-    if (!listId) return;
-
+  startClearCompleted(): void {
     const completedIds = this.allTodos().filter(t => t.completed).map(t => t.id);
     if (completedIds.length === 0) {
       this.snackBar.open('No completed to-dos to clear.', 'Close', { duration: 3000 });
       return;
     }
+    this.state.update(s => ({ ...s, confirmingClearCompleted: true }));
+  }
 
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
-      data: {
-        title: 'Clear Completed To-Dos',
-        message: `Are you sure you want to permanently delete ${completedIds.length} completed to-do(s)?`
+  cancelClearCompleted(): void {
+    this.state.update(s => ({ ...s, confirmingClearCompleted: false }));
+  }
+
+  async confirmClearCompleted(): Promise<void> {
+    const listId = this.selectedListId();
+    if (!listId) return;
+
+    const completedIds = this.allTodos().filter(t => t.completed).map(t => t.id);
+    this.state.update(s => ({ ...s, confirmingClearCompleted: false }));
+
+    await this._withOptimisticTodoUpdate(
+      (todos) => todos.filter(t => !t.completed),
+      () => this.todoService.deleteTodos(listId, completedIds),
+      {
+        successMsg: 'Completed to-dos cleared.',
+        errorMsg: 'Failed to clear completed to-dos.'
       }
-    });
-
-    const result = await firstValueFrom(dialogRef.afterClosed().pipe(filter(res => !!res)));
-    if (result) {
-      await this._withOptimisticTodoUpdate(
-        (todos) => todos.filter(t => !t.completed),
-        () => this.todoService.deleteTodos(listId, completedIds),
-        {
-          successMsg: 'Completed to-dos cleared.',
-          errorMsg: 'Failed to clear completed to-dos.'
-        }
-      );
-    }
+    );
   }
 
   async drop(event: CdkDragDrop<Todo[]>): Promise<void> {

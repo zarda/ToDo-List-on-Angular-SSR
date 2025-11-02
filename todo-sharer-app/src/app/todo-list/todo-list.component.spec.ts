@@ -64,16 +64,25 @@ describe('TodoListComponent', () => {
       startEditList: jasmine.createSpy('startEditList'),
       cancelEditList: jasmine.createSpy('cancelEditList'),
       saveEditList: jasmine.createSpy('saveEditList').and.resolveTo(),
-      deleteList: jasmine.createSpy('deleteList').and.resolveTo(),
+      startDeleteList: jasmine.createSpy('startDeleteList'),
+      cancelDeleteList: jasmine.createSpy('cancelDeleteList'),
+      confirmDeleteList: jasmine.createSpy('confirmDeleteList').and.resolveTo(),
+      confirmingDeleteListId: signal(null),
+      confirmingDeleteTodoId: signal(null),
+      confirmingClearCompleted: signal(false),
       startSharing: jasmine.createSpy('startSharing'),
       cancelSharing: jasmine.createSpy('cancelSharing'),
       shareList: jasmine.createSpy('shareList').and.resolveTo(),
       unshareList: jasmine.createSpy('unshareList').and.resolveTo(),
-      deleteTodo: jasmine.createSpy('deleteTodo').and.resolveTo(),
+      startDeleteTodo: jasmine.createSpy('startDeleteTodo'),
+      cancelDeleteTodo: jasmine.createSpy('cancelDeleteTodo'),
+      confirmDeleteTodo: jasmine.createSpy('confirmDeleteTodo').and.resolveTo(),
       toggleTodoCompletion: jasmine.createSpy('toggleTodoCompletion').and.resolveTo(),
       saveEditedTodoText: jasmine.createSpy('saveEditedTodoText').and.resolveTo(),
       updateDueDate: jasmine.createSpy('updateDueDate').and.resolveTo(),
-      clearCompleted: jasmine.createSpy('clearCompleted').and.resolveTo(),
+      startClearCompleted: jasmine.createSpy('startClearCompleted'),
+      cancelClearCompleted: jasmine.createSpy('cancelClearCompleted'),
+      confirmClearCompleted: jasmine.createSpy('confirmClearCompleted').and.resolveTo(),
       drop: jasmine.createSpy('drop').and.resolveTo(),
       today: new Date()
     };
@@ -141,13 +150,15 @@ describe('TodoListComponent', () => {
 
   it('should have access to store todo management methods', () => {
     expect(component['store'].addTodo).toBeDefined();
-    expect(component['store'].deleteTodo).toBeDefined();
+    expect(component['store'].startDeleteTodo).toBeDefined();
+    expect(component['store'].confirmDeleteTodo).toBeDefined();
     expect(component['store'].toggleTodoCompletion).toBeDefined();
   });
 
   it('should have access to store list management methods', () => {
     expect(component['store'].addList).toBeDefined();
-    expect(component['store'].deleteList).toBeDefined();
+    expect(component['store'].startDeleteList).toBeDefined();
+    expect(component['store'].confirmDeleteList).toBeDefined();
     expect(component['store'].setSelectedListId).toBeDefined();
   });
 

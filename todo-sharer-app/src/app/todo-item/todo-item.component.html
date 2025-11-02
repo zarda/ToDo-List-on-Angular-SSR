@@ -1,5 +1,15 @@
 <div class="todo-item-content" [class.completed-item]="todo.completed">
-  @if (isEditing) {
+  @if (isConfirmingDelete) {
+    <div class="delete-confirmation">
+      <span class="confirmation-text">Delete this to-do?</span>
+      <button mat-icon-button color="warn" (click)="deleteConfirmed.emit()" aria-label="Confirm delete">
+        <mat-icon>check</mat-icon>
+      </button>
+      <button mat-icon-button (click)="deleteCancelled.emit()" aria-label="Cancel delete">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  } @else if (isEditing) {
     <form (ngSubmit)="editSaved.emit()" class="edit-form">
       <mat-form-field appearance="outline" class="edit-input">
         <input
@@ -32,6 +42,6 @@
     </button>
     <mat-datepicker #picker (closed)="onDatePickerClosed()"></mat-datepicker>
     <button mat-icon-button (click)="editStarted.emit()" aria-label="Edit to-do"><mat-icon>edit</mat-icon></button>
-    <button mat-icon-button color="warn" (click)="deleted.emit()" aria-label="Delete to-do"><mat-icon>delete</mat-icon></button>
+    <button mat-icon-button color="warn" (click)="deleteStarted.emit()" aria-label="Delete to-do"><mat-icon>delete</mat-icon></button>
   }
 </div>

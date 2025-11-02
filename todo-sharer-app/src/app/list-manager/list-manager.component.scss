@@ -20,6 +20,22 @@
   gap: 0.5rem;
 }
 
+.confirmation-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--mat-sys-error-container);
+  border-radius: 4px;
+  border: 1px solid var(--mat-sys-outline-variant);
+}
+
+.confirmation-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--mat-sys-on-error-container);
+}
+
 mat-divider {
   margin: 1rem 0;
 }

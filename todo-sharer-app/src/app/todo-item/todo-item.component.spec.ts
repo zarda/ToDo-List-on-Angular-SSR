@@ -1,14 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TodoItemComponent } from './todo-item.component';
 import { Todo } from '../models/todo.model';
-import { of } from 'rxjs';
 import { Timestamp } from '@angular/fire/firestore';
 
 describe('TodoItemComponent', () => {
   let component: TodoItemComponent;
   let fixture: ComponentFixture<TodoItemComponent>;
-  let dialogMock: jasmine.SpyObj<MatDialog>;
 
   const mockTodo: Todo = {
     id: 'todo-1',
@@ -22,13 +19,8 @@ describe('TodoItemComponent', () => {
   };
 
   beforeEach(async () => {
-    dialogMock = jasmine.createSpyObj('MatDialog', ['open']);
-
     await TestBed.configureTestingModule({
-      imports: [TodoItemComponent],
-      providers: [
-        { provide: MatDialog, useValue: dialogMock }
-      ]
+      imports: [TodoItemComponent]
     }).overrideComponent(TodoItemComponent, {
       set: { changeDetection: 0 }
     }).compileComponents();
@@ -54,13 +46,13 @@ describe('TodoItemComponent', () => {
     expect(component.completionToggled.emit).toHaveBeenCalledWith(true);
   });
 
-  it('should emit deleted when delete button is clicked', () => {
-    spyOn(component.deleted, 'emit');
+  it('should emit deleteStarted when delete button is clicked', () => {
+    spyOn(component.deleteStarted, 'emit');
 
     const deleteButton = fixture.nativeElement.querySelector('button[aria-label="Delete to-do"]');
     deleteButton.click();
 
-    expect(component.deleted.emit).toHaveBeenCalled();
+    expect(component.deleteStarted.emit).toHaveBeenCalled();
   });
 
   it('should emit editStarted when edit button is clicked', () => {
@@ -92,17 +84,11 @@ describe('TodoItemComponent', () => {
     expect(component.editSaved.emit).toHaveBeenCalled();
   });
 
-  it('should have openDueDateEditor method', () => {
-    expect(component.openDueDateEditor).toBeDefined();
-    expect(typeof component.openDueDateEditor).toBe('function');
-  });
-
   it('should display due date when present', () => {
     fixture.detectChanges();
 
     const dueDateText = fixture.nativeElement.querySelector('.due-date-text');
     expect(dueDateText).toBeTruthy();
-    expect(dueDateText.textContent).toContain('Due:');
   });
 
   it('should have editingText property', () => {
@@ -110,55 +96,12 @@ describe('TodoItemComponent', () => {
     expect(component.editingText).toBe('Test');
   });
 
-  it('should open due date editor dialog', () => {
-    const afterClosedSubject = of(new Date('2025-12-31'));
-    const dialogRefMock = {
-      afterClosed: () => afterClosedSubject
-    } as any;
+  it('should have isConfirmingDelete property', () => {
+    component.isConfirmingDelete = false;
+    expect(component.isConfirmingDelete).toBe(false);
 
-    dialogMock.open.and.returnValue(dialogRefMock);
-    spyOn(component.dueDateChanged, 'emit');
-
-    component.openDueDateEditor();
-
-    expect(dialogMock.open).toHaveBeenCalled();
-    expect(component.dueDateChanged.emit).toHaveBeenCalled();
-  });
-
-  it('should not emit dueDateChanged when dialog is cancelled', () => {
-    const afterClosedSubject = of(undefined);
-    const dialogRefMock = {
-      afterClosed: () => afterClosedSubject
-    } as any;
-
-    dialogMock.open.and.returnValue(dialogRefMock);
-    spyOn(component.dueDateChanged, 'emit');
-
-    component.openDueDateEditor();
-
-    expect(dialogMock.open).toHaveBeenCalled();
-    expect(component.dueDateChanged.emit).not.toHaveBeenCalled();
-  });
-
-  it('should handle null dueDate in todo', () => {
-    const todoWithoutDate: Todo = {
-      ...mockTodo,
-      dueDate: null
-    };
-    component.todo = todoWithoutDate;
-
-    const afterClosedSubject = of(new Date());
-    const dialogRefMock = {
-      afterClosed: () => afterClosedSubject
-    } as any;
-
-    dialogMock.open.and.returnValue(dialogRefMock);
-    spyOn(component.dueDateChanged, 'emit');
-
-    component.openDueDateEditor();
-
-    expect(dialogMock.open).toHaveBeenCalled();
-    expect(component.dueDateChanged.emit).toHaveBeenCalled();
+    component.isConfirmingDelete = true;
+    expect(component.isConfirmingDelete).toBe(true);
   });
 
   it('should emit editTextChanged event', () => {

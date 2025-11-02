@@ -11,17 +11,29 @@
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
 
-    @if (store.selectedListId() && !store.isEditingList()) {
+    @if (store.selectedListId() && !store.isEditingList() && !store.confirmingDeleteListId()) {
       <div class="list-actions">
         <button mat-icon-button (click)="store.startEditList()" matTooltip="Edit list name">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button color="warn" (click)="store.deleteList()" [disabled]="store.isDeletingList()" matTooltip="Delete list">
+        <button mat-icon-button color="warn" (click)="store.startDeleteList()" matTooltip="Delete list">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    }
+
+    @if (store.confirmingDeleteListId() === store.selectedListId()) {
+      <div class="confirmation-actions">
+        <span class="confirmation-text">Delete this list?</span>
+        <button mat-icon-button color="warn" (click)="store.confirmDeleteList()" [disabled]="store.isDeletingList()" matTooltip="Confirm">
           @if (store.isDeletingList()) {
             <mat-spinner diameter="20"></mat-spinner>
           } @else {
-            <mat-icon>delete</mat-icon>
+            <mat-icon>check</mat-icon>
           }
+        </button>
+        <button mat-icon-button (click)="store.cancelDeleteList()" [disabled]="store.isDeletingList()" matTooltip="Cancel">
+          <mat-icon>close</mat-icon>
         </button>
       </div>
     }

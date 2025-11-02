@@ -40,7 +40,21 @@
     </mat-chip-option>
   </mat-chip-listbox>
 
-  <button mat-raised-button color="warn" (click)="store.clearCompleted()" [disabled]="!store.hasCompletedTodos()" matTooltip="Permanently delete all completed to-dos">
-    <mat-icon>delete_sweep</mat-icon>
-  </button>
+  @if (!store.confirmingClearCompleted()) {
+    <button mat-raised-button color="warn" (click)="store.startClearCompleted()" [disabled]="!store.hasCompletedTodos()" matTooltip="Permanently delete all completed to-dos">
+      <mat-icon>delete_sweep</mat-icon>
+    </button>
+  }
+
+  @if (store.confirmingClearCompleted()) {
+    <div class="clear-confirmation">
+      <span class="confirmation-text">Clear all completed?</span>
+      <button mat-icon-button color="warn" (click)="store.confirmClearCompleted()" matTooltip="Confirm">
+        <mat-icon>check</mat-icon>
+      </button>
+      <button mat-icon-button (click)="store.cancelClearCompleted()" matTooltip="Cancel">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  }
 </div>

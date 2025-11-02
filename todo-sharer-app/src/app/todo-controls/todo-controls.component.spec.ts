@@ -18,7 +18,10 @@ describe('TodoControlsComponent', () => {
       sortBy: signal('order' as const),
       setSortBy: jasmine.createSpy('setSortBy'),
       hasCompletedTodos: signal(false),
-      clearCompleted: jasmine.createSpy('clearCompleted').and.resolveTo(),
+      startClearCompleted: jasmine.createSpy('startClearCompleted'),
+      cancelClearCompleted: jasmine.createSpy('cancelClearCompleted'),
+      confirmClearCompleted: jasmine.createSpy('confirmClearCompleted').and.resolveTo(),
+      confirmingClearCompleted: signal(false),
     };
 
     await TestBed.configureTestingModule({

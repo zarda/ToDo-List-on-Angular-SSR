@@ -36,9 +36,12 @@ export class TodoItemComponent {
   @Input({ required: true }) todo!: Todo;
   @Input() isEditing = false;
   @Input() editingText = '';
+  @Input() isConfirmingDelete = false;
 
   @Output() completionToggled = new EventEmitter<boolean>();
-  @Output() deleted = new EventEmitter<void>();
+  @Output() deleteStarted = new EventEmitter<void>();
+  @Output() deleteCancelled = new EventEmitter<void>();
+  @Output() deleteConfirmed = new EventEmitter<void>();
   @Output() editStarted = new EventEmitter<void>();
   @Output() editCancelled = new EventEmitter<void>();
   @Output() editSaved = new EventEmitter<void>();
