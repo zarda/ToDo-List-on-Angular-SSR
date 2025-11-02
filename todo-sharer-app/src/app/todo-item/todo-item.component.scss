@@ -105,12 +105,12 @@ button.due-date-container {
   }
 
   &.has-overdue {
-    background-color: rgba(255, 23, 68, 0.1);
+    background-color: var(--mat-sys-error-container);
     border-color: var(--mat-sys-error);
   }
 
   &.has-due-soon {
-    background-color: rgba(255, 152, 0, 0.1);
+    background-color: var(--mat-sys-tertiary-container);
     border-color: var(--mat-sys-tertiary);
   }
 }

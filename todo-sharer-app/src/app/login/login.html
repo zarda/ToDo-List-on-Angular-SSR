@@ -1,19 +1,21 @@
 <div class="login-container">
   <mat-card>
     <mat-card-header>
-      <mat-card-title>Welcome to To-Do Sharer</mat-card-title>
-      <mat-card-subtitle>Please log in to continue</mat-card-subtitle>
+      <mat-card-title>Welcome</mat-card-title>
+      <mat-card-subtitle>Please login to continue</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <button mat-raised-button color="primary" (click)="login()" [disabled]="loading()">
-        <span [hidden]="!loading()">
-          <mat-spinner diameter="20" />
-        </span>
         <span [hidden]="loading()" class="button-content">
           <img src="/assets/google-logo.svg" alt="Google logo" />
           <span>Login with Google</span>
         </span>
       </button>
+      <div class="flex-center">
+        <span [hidden]="!loading()">
+          <mat-spinner diameter="40" />
+        </span>
+      </div>
     </mat-card-content>
     @if (error(); as errorMessage) {
       <mat-card-footer class="error-footer">
