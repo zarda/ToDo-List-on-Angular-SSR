@@ -22,7 +22,7 @@
       </div>
     }
 
-    @if (store.confirmingDeleteListId() === store.selectedListId()) {
+    @if (store.confirmingDeleteListId() === store.selectedListId() && store.filteredLists().length > 0) {
       <div class="confirmation-actions">
         <span class="confirmation-text">Delete this list?</span>
         <button mat-icon-button color="warn" (click)="store.confirmDeleteList()" [disabled]="store.isDeletingList()" matTooltip="Confirm">
