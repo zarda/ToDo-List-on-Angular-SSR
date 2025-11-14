@@ -90,7 +90,8 @@ A modern web application that lets people create, manage, and **share** todo lis
 - ✅ Visual status indicators (overdue/due soon)
 - ✅ Test coverage improved
 - ✅ Hybrid SSR/CSR rendering optimized
-- 📊 Version: Early release (0.4.16)
+- ✅ i18n support (Traditional Chinese, Japanese)
+- 📊 Version: Early release (0.5.18)
 
 ## User Permissions
 
@@ -135,7 +136,17 @@ Each task contains:
 - **Email Verification**: Users must exist in system to receive shares
 - **Self-sharing Prevention**: Can't share lists with their own account
 
+## Internationalization (i18n)
+
+Supports **English**, **Traditional Chinese (繁體中文)**, and **Japanese (日本語)** with instant language switching via the globe icon in the navigation bar - no page reload required!
+
+### Key Features
+
+- **Runtime switching** using ngx-translate - instant language changes
+- **Browser detection** - automatically uses user's preferred language
+- **localStorage persistence** - remembers user's choice
+- **34 translated strings** across all UI components including sharing features
+
 ---
 
 **In Simple Terms**: This is a **team-friendly todo list app** that combines the simplicity of a checklist with the power of real-time collaboration, built on enterprise-grade Google technology.
-

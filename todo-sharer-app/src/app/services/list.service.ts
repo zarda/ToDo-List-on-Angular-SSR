@@ -21,8 +21,8 @@ import {
 } from '@angular/fire/firestore';
 import { Observable, of, throwError } from 'rxjs';
 import { map, mergeMap, startWith, catchError } from 'rxjs/operators';
-import { List } from './list';
-import { User } from './user';
+import { List } from '../list';
+import { User } from '../user';
 
 type ListDocument = Omit<List, 'id' | 'createdAt' | 'collaborators' | 'ownerEmail' | 'ownerPhotoURL'> & {
   createdAt: ReturnType<typeof serverTimestamp>;

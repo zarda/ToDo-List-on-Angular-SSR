@@ -1,12 +1,12 @@
 @if (store.selectedList(); as list) {
   <div class="sharing-info">
-    <span class="sharing-label">Members:</span>
+    <span class="sharing-label">{{ 'membersLabel' | translate }}</span>
     <div class="member-chips">
       <mat-chip-set>
         <!-- Owner Chip -->
         <mat-chip [highlighted]="true">
           @if (list.ownerPhotoURL) {
-            <img matChipAvatar [src]="list.ownerPhotoURL" alt="Owner avatar" />
+            <img matChipAvatar [src]="list.ownerPhotoURL" [alt]="'ownerAvatarAlt' | translate" />
           } @else {
             <mat-icon matChipAvatar>account_circle</mat-icon>
           }
@@ -19,7 +19,7 @@
             [removable]="list.ownerUid === store.currentUser()?.uid && store.unsharingEmail() !== collaborator.email"
             [disabled]="store.unsharingEmail() === collaborator.email"
             (removed)="store.unshareList(collaborator.email!)">
-            <img matChipAvatar [src]="collaborator.photoURL || 'assets/default-avatar.png'" alt="Collaborator avatar" />
+            <img matChipAvatar [src]="collaborator.photoURL || 'assets/default-avatar.png'" [alt]="'collaboratorAvatarAlt' | translate" />
             {{ collaborator.email }}
             @if (store.unsharingEmail() === collaborator.email) {
               <mat-progress-spinner matChipTrailingIcon diameter="16"></mat-progress-spinner>
@@ -36,7 +36,7 @@
       @if (store.isSharing()) {
         <div class="share-form">
           <mat-form-field appearance="outline" class="share-input">
-            <mat-label>Email to share with</mat-label>
+            <mat-label>{{ 'emailToShareWith' | translate }}</mat-label>
             <input matInput [ngModel]="store.shareEmail()" (ngModelChange)="store.setShareEmail($event)" (keyup.enter)="store.shareList()" [disabled]="store.isSharingList()" />
           </mat-form-field>
           <button mat-icon-button color="primary" (click)="store.shareList()" [disabled]="store.isSharingList() || !store.shareEmail()">
@@ -48,7 +48,7 @@
         </div>
       } @else {
         <button mat-raised-button color="primary" (click)="store.startSharing()">
-          <mat-icon>person_add</mat-icon> Share
+          <mat-icon>person_add</mat-icon> {{ 'shareButton' | translate }}
         </button>
       }
     }

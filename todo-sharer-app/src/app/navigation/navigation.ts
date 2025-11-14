@@ -5,8 +5,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { AuthService } from '../services/auth.service';
+import { LocaleService } from '../services/locale.service';
 
 @Component({
   selector: 'app-navigation',
@@ -18,15 +21,22 @@ import { AuthService } from '../auth/auth.service';
     MatDividerModule,
     MatIconModule,
     MatMenuModule,
+    MatTooltipModule,
     RouterLink,
+    TranslateModule,
   ],
   templateUrl: './navigation.html',
   styleUrls: ['./navigation.scss'],
 })
 export class Navigation {
   protected readonly authService = inject(AuthService);
+  protected readonly localeService = inject(LocaleService);
 
   async logout() {
     await this.authService.logout();
+  }
+
+  changeLocale(localeCode: string) {
+    this.localeService.switchLocale(localeCode);
   }
 }

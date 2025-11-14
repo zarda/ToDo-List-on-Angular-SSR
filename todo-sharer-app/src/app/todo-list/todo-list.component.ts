@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { TranslateModule } from '@ngx-translate/core';
 
 import { TodoStore } from './todo.store';
 import { ListManagerComponent } from '../list-manager/list-manager.component';
@@ -32,6 +32,7 @@ import { TodoItemComponent } from '../todo-item/todo-item.component';
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    TranslateModule,
     ListManagerComponent,
     SharingManagerComponent,
     TodoControlsComponent,

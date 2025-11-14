@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { Firestore } from '@angular/fire/firestore';
 import { TodoService } from './todo.service';
-import { AuthService } from './auth/auth.service';
-import { User } from './user';
+import { AuthService } from './auth.service';
+import { User } from '../user';
 
 describe('TodoService', () => {
   let service: TodoService;

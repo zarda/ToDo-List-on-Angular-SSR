@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { TodoStore } from './todo.store';
-import { TodoService } from '../todo.service';
-import { ListService } from '../list.service';
-import { AuthService } from '../auth/auth.service';
+import { TodoService } from '../services/todo.service';
+import { ListService } from '../services/list.service';
+import { AuthService } from '../services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { signal } from '@angular/core';

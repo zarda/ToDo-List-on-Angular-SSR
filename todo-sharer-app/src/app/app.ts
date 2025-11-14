@@ -2,7 +2,7 @@ import { Component, inject, signal, OnInit, OnDestroy, Renderer2, Inject, PLATFO
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { RouterOutlet, Router } from '@angular/router';
 import { Navigation } from './navigation/navigation';
-import { AuthService } from './auth/auth.service';
+import { AuthService } from './services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Subscription } from 'rxjs';

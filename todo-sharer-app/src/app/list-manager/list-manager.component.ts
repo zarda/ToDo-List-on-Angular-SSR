@@ -7,6 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 import { TodoStore } from '../todo-list/todo.store';
 
 @Component({
@@ -21,6 +23,8 @@ import { TodoStore } from '../todo-list/todo.store';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatTooltipModule,
+    TranslateModule,
   ],
   templateUrl: './list-manager.component.html',
   styleUrls: ['./list-manager.component.scss'],

@@ -1,7 +1,7 @@
 <div class="list-manager-container">
   <div class="list-controls">
     <mat-form-field appearance="outline" class="flex-grow1">
-      <mat-label>Search Lists</mat-label>
+      <mat-label>{{ 'searchLists' | translate }}</mat-label>
       <input matInput [ngModel]="store.listSearchTerm()" (ngModelChange)="store.setListSearchTerm($event)" />
       @if (store.listSearchTerm()) {
         <button mat-icon-button matSuffix (click)="store.setListSearchTerm('')">
@@ -13,10 +13,10 @@
 
     @if (store.selectedListId() && !store.isEditingList() && !store.confirmingDeleteListId()) {
       <div class="list-actions">
-        <button mat-icon-button (click)="store.startEditList()" matTooltip="Edit list name">
+        <button mat-icon-button (click)="store.startEditList()" [matTooltip]="'editListName' | translate">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button color="warn" (click)="store.startDeleteList()" matTooltip="Delete list">
+        <button mat-icon-button color="warn" (click)="store.startDeleteList()" [matTooltip]="'deleteList' | translate">
           <mat-icon>delete</mat-icon>
         </button>
       </div>
@@ -24,15 +24,15 @@
 
     @if (store.confirmingDeleteListId() === store.selectedListId() && store.filteredLists().length > 0) {
       <div class="confirmation-actions">
-        <span class="confirmation-text">Delete this list?</span>
-        <button mat-icon-button color="warn" (click)="store.confirmDeleteList()" [disabled]="store.isDeletingList()" matTooltip="Confirm">
+        <span class="confirmation-text">{{ 'deleteListConfirm' | translate }}</span>
+        <button mat-icon-button color="warn" (click)="store.confirmDeleteList()" [disabled]="store.isDeletingList()" [matTooltip]="'confirm' | translate">
           @if (store.isDeletingList()) {
             <mat-spinner diameter="20"></mat-spinner>
           } @else {
             <mat-icon>check</mat-icon>
           }
         </button>
-        <button mat-icon-button (click)="store.cancelDeleteList()" [disabled]="store.isDeletingList()" matTooltip="Cancel">
+        <button mat-icon-button (click)="store.cancelDeleteList()" [disabled]="store.isDeletingList()" [matTooltip]="'cancel' | translate">
           <mat-icon>close</mat-icon>
         </button>
       </div>
@@ -42,7 +42,7 @@
   @if (store.isEditingList()) {
     <div class="edit-list-form">
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Edit list name</mat-label>
+        <mat-label>{{ 'editListNameLabel' | translate }}</mat-label>
         <input matInput [ngModel]="store.editingListText()" (ngModelChange)="store.setEditingListText($event)" (keyup.enter)="store.saveEditList()" />
       </mat-form-field>
       <button mat-icon-button color="primary" (click)="store.saveEditList()" [disabled]="store.isSavingList()">
@@ -68,7 +68,7 @@
 
   <div class="add-list-form">
     <mat-form-field appearance="outline" class="flex-grow1">
-      <mat-label>New list name</mat-label>
+      <mat-label>{{ 'newListName' | translate }}</mat-label>
       <input matInput [ngModel]="store.newListText()" (ngModelChange)="store.setNewListText($event)" (keyup.enter)="store.addList()" [disabled]="store.isAddingList()" />
     </mat-form-field>
     <button mat-raised-button color="primary" (click)="store.addList()" [disabled]="store.isAddingList()">

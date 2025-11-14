@@ -11,7 +11,9 @@ RUN npm ci --prefer-offline --no-audit 2>/dev/null || npm install --no-audit
 # Copy application source
 COPY . .
 
-# Build the application
+# Build the application (single build with runtime i18n using ngx-translate)
+# All languages (en, zh-Hant, ja) are included in a single build
+# Users can switch languages instantly without page reload
 RUN npm run build
 
 # Stage 2: Production dependencies
@@ -34,6 +36,8 @@ RUN groupadd -g 1001 nodejs && \
 WORKDIR /usr/src/app
 
 # Copy built application from build stage
+# Single browser build with all translations: dist/todo-sharer-app/browser/
+# Server build: dist/todo-sharer-app/server/
 COPY --from=build --chown=nodejs:nodejs /usr/src/app/dist ./dist
 
 # Copy production dependencies from deps stage
@@ -49,4 +53,6 @@ USER nodejs
 EXPOSE 8080
 
 # Start the application
+# The app uses ngx-translate for runtime language switching
+# Users can change language instantly via the UI language switcher
 CMD [ "node", "dist/todo-sharer-app/server/server.mjs" ]

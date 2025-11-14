@@ -17,8 +17,8 @@ import {
 } from '@angular/fire/firestore';
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { Todo, TodoCreate } from './models/todo.model';
-import { AuthService } from './auth/auth.service';
+import { Todo, TodoCreate } from '../models/todo.model';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',

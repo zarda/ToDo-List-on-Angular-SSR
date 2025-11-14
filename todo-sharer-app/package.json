@@ -1,10 +1,11 @@
 {
   "name": "todo-sharer-app",
-  "version": "0.4.16",
+  "version": "0.5.18",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration=production",
+    "build:dev": "ng build --configuration=development",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr": "node dist/todo-sharer-app/server/server.mjs"
@@ -34,6 +35,8 @@
     "@angular/platform-server": "^20.3.0",
     "@angular/router": "^20.3.0",
     "@angular/ssr": "^20.3.6",
+    "@ngx-translate/core": "^17.0.0",
+    "@ngx-translate/http-loader": "^17.0.0",
     "add": "^2.0.6",
     "compression": "^1.7.4",
     "express": "^5.1.0",

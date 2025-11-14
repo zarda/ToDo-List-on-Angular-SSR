@@ -1,12 +1,12 @@
 <div class="todo-controls-container">
   @if (store.todos().length >= 50) {
     <mat-form-field class="search-field" appearance="outline">
-      <mat-label>Search To-Dos</mat-label>
+      <mat-label>{{ 'searchTodos' | translate }}</mat-label>
       <input
         matInput
         [ngModel]="store.searchTerm()"
         (ngModelChange)="store.setSearchTerm($event)"
-        placeholder="e.g., finish report" />
+        [placeholder]="'searchPlaceholder' | translate" />
       <button
         mat-icon-button
         matSuffix
@@ -20,7 +20,7 @@
 </div>
 
 <div class="action-buttons">
-  <mat-button-toggle [checked]="store.hideCompleted()" (change)="store.setHideCompleted($event.source.checked)" matTooltip="Hide completed to-dos">
+  <mat-button-toggle [checked]="store.hideCompleted()" (change)="store.setHideCompleted($event.source.checked)" [matTooltip]="'hideCompletedTooltip' | translate">
     @if (store.hideCompleted()) {
       <mat-icon>visibility</mat-icon>
     } @else {
@@ -28,31 +28,31 @@
     }
   </mat-button-toggle>
 
-  <mat-chip-listbox class="sort-controls" [value]="store.sortBy()" (change)="onSortChange($event)" aria-label="Sort by">
-    <mat-chip-option value="order" matTooltip="Sort by order">
+  <mat-chip-listbox class="sort-controls" [value]="store.sortBy()" (change)="onSortChange($event)" [attr.aria-label]="'sortBy' | translate">
+    <mat-chip-option value="order" [matTooltip]="'sortByOrder' | translate">
       <mat-icon>drag_handle</mat-icon>
     </mat-chip-option>
-    <mat-chip-option value="createdAt" matTooltip="Sort by date added">
+    <mat-chip-option value="createdAt" [matTooltip]="'sortByDateAdded' | translate">
       <mat-icon>date_range</mat-icon>
     </mat-chip-option>
-    <mat-chip-option value="dueDate" matTooltip="Sort by due date">
+    <mat-chip-option value="dueDate" [matTooltip]="'sortByDueDate' | translate">
       <mat-icon>event</mat-icon>
     </mat-chip-option>
   </mat-chip-listbox>
 
   @if (!store.confirmingClearCompleted()) {
-    <button mat-raised-button color="warn" (click)="store.startClearCompleted()" [disabled]="!store.hasCompletedTodos()" matTooltip="Permanently delete all completed to-dos">
+    <button mat-raised-button color="warn" (click)="store.startClearCompleted()" [disabled]="!store.hasCompletedTodos()" [matTooltip]="'deleteAllCompletedTooltip' | translate">
       <mat-icon>delete_sweep</mat-icon>
     </button>
   }
 
   @if (store.confirmingClearCompleted()) {
     <div class="clear-confirmation">
-      <span class="confirmation-text">Clear all completed?</span>
-      <button mat-icon-button color="warn" (click)="store.confirmClearCompleted()" matTooltip="Confirm">
+      <span class="confirmation-text">{{ 'clearAllCompletedConfirm' | translate }}</span>
+      <button mat-icon-button color="warn" (click)="store.confirmClearCompleted()" [matTooltip]="'confirm' | translate">
         <mat-icon>check</mat-icon>
       </button>
-      <button mat-icon-button (click)="store.cancelClearCompleted()" matTooltip="Cancel">
+      <button mat-icon-button (click)="store.cancelClearCompleted()" [matTooltip]="'cancel' | translate">
         <mat-icon>close</mat-icon>
       </button>
     </div>

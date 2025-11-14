@@ -5,7 +5,7 @@ import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { App } from './app';
-import { AuthService } from './auth/auth.service';
+import { AuthService } from './services/auth.service';
 
 class MockAuthService {
   currentUser = () => null;

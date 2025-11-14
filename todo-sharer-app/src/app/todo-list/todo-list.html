@@ -2,9 +2,9 @@
   <mat-card-header>
     <mat-card-title>
       @if (store.currentUser()?.displayName) {
-        {{ store.currentUser()?.displayName }}'s To-Do Lists
+        <span>{{ 'userTodoLists' | translate: {name: store.currentUser()?.displayName} }}</span>
       } @else {
-        My To-Do Lists
+        <span>{{ 'myTodoLists' | translate }}</span>
       }
     </mat-card-title>
   </mat-card-header>
@@ -22,7 +22,7 @@
           <mat-card-content>
             <form class="add-todo-form" (ngSubmit)="store.addTodo()">
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>What needs to be done?</mat-label>
+                <mat-label>{{ 'whatNeedsToBeDone' | translate }}</mat-label>
                 <input matInput [ngModel]="store.newTodoText()" (ngModelChange)="store.setNewTodoText($event)" [disabled]="store.isAddingTodo()" name="newTodo" />
               </mat-form-field>
               <button mat-raised-button color="primary" type="submit" [disabled]="store.isAddingTodo()">
@@ -65,8 +65,8 @@
                   @if (store.selectedListId()) {
                     <div class="empty-state">
                       <mat-icon>add_task</mat-icon>
-                      <h3>This list is empty.</h3>
-                      <p>Get started by adding your first to-do item above.</p>
+                      <h3>{{ 'listEmptyTitle' | translate }}</h3>
+                      <p>{{ 'listEmptyMessage' | translate }}</p>
                     </div>
                   }
                 }
@@ -78,8 +78,8 @@
     } @else {
       <div class="empty-state">
         <mat-icon>list_alt</mat-icon>
-        <h2>Welcome to your To-Do List!</h2>
-        <p>Create your first list to get started.</p>
+        <h2>{{ 'welcomeTitle' | translate }}</h2>
+        <p>{{ 'welcomeMessage' | translate }}</p>
         <app-list-manager></app-list-manager>
       </div>
     }

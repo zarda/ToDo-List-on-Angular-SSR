@@ -1,11 +1,25 @@
 <mat-toolbar color="primary">
-  <span>To-Do Sharer</span>
+  <span>{{ 'appTitle' | translate }}</span>
   <span class="spacer"></span>
+
+  <button mat-icon-button [matMenuTriggerFor]="languageMenu" [matTooltip]="'changeLanguage' | translate">
+    <mat-icon>language</mat-icon>
+  </button>
+  <mat-menu #languageMenu="matMenu">
+    @for (locale of localeService.getAvailableLocales(); track locale.code) {
+      <button mat-menu-item (click)="changeLocale(locale.code)" [disabled]="locale.code === localeService.getCurrentLocale()">
+        <span>{{ locale.nativeName }}</span>
+        @if (locale.code === localeService.getCurrentLocale()) {
+          <mat-icon>check</mat-icon>
+        }
+      </button>
+    }
+  </mat-menu>
 
   @if (authService.currentUser(); as currentUser) {
     <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-button">
       @if (currentUser.photoURL) {
-        <img class="avatar" [src]="currentUser.photoURL" alt="User avatar">
+        <img class="avatar" [src]="currentUser.photoURL" [alt]="'userAvatarAlt' | translate">
       } @else {
         <mat-icon class="avatar">account_circle</mat-icon>
       }
@@ -20,13 +34,13 @@
       <mat-divider></mat-divider>
       <button mat-menu-item (click)="logout()">
         <mat-icon>logout</mat-icon>
-        <span>Logout</span>
+        <span>{{ 'logoutButton' | translate }}</span>
       </button>
     </mat-menu>
   } @else {
     <button mat-flat-button routerLink="/login">
       <mat-icon>login</mat-icon>
-      <span>Login</span>
+      <span>{{ 'loginButton' | translate }}</span>
     </button>
   }
 </mat-toolbar>

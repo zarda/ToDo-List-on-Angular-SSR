@@ -6,11 +6,11 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Timestamp } from '@angular/fire/firestore';
 
-import { TodoService } from '../todo.service';
+import { TodoService } from '../services/todo.service';
 import { Todo } from '../models/todo.model';
-import { ListService } from '../list.service';
+import { ListService } from '../services/list.service';
 import { List } from '../list';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../services/auth.service';
 
 interface TodoState {
   lists: List[];

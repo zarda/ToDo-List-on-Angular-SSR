@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Firestore } from '@angular/fire/firestore';
 import { ListService } from './list.service';
-import { User } from './user';
+import { User } from '../user';
 
 describe('ListService', () => {
   let service: ListService;

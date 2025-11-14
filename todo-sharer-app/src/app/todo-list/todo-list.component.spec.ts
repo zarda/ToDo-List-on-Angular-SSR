@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TodoListComponent } from './todo-list.component';
 import { TodoStore } from './todo.store';
-import { TodoService } from '../todo.service';
-import { ListService } from '../list.service';
-import { AuthService } from '../auth/auth.service';
+import { TodoService } from '../services/todo.service';
+import { ListService } from '../services/list.service';
+import { AuthService } from '../services/auth.service';
 import { Firestore } from '@angular/fire/firestore';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
