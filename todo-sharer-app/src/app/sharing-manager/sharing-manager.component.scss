@@ -2,10 +2,49 @@
   padding: 1rem;
 }
 
-.sharing-label {
-  font-weight: 500;
+.sharing-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 0.5rem;
-  display: block;
+}
+
+.sharing-label-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  margin-left: -1rem;
+
+  .sharing-label {
+    font-weight: 500;
+    font-size: 1rem;
+  }
+
+  .toggle-icon {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+.member-avatars {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  justify-content: center;
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .owner-avatar {
+    border: 2px solid var(--mat-sys-primary);
+  }
 }
 
 .member-chips {

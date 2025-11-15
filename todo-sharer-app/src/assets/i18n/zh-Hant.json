@@ -7,7 +7,7 @@
   "cancel": "取消",
   "editListNameLabel": "編輯清單名稱",
   "newListName": "新清單名稱",
-  "appTitle": "待辦事項分享器",
+  "appTitle": "To-do分享者",
   "changeLanguage": "變更語言",
   "userAvatarAlt": "使用者頭像",
   "logoutButton": "登出",
@@ -32,5 +32,7 @@
   "ownerAvatarAlt": "擁有者頭像",
   "collaboratorAvatarAlt": "協作者頭像",
   "emailToShareWith": "分享對象的電子郵件",
-  "shareButton": "分享"
+  "shareButton": "分享",
+  "showLists": "顯示清單",
+  "hideLists": "隱藏清單"
 }

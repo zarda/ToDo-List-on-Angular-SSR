@@ -199,6 +199,16 @@ describe('TodoStore', () => {
       const today = store.today;
       expect(today instanceof Date).toBeTrue();
     });
+
+    it('should have showListManager', () => {
+      expect(store.showListManager).toBeDefined();
+      expect(store.showListManager()).toBeTrue(); // default is true
+    });
+
+    it('should have showSharingManager', () => {
+      expect(store.showSharingManager).toBeDefined();
+      expect(store.showSharingManager()).toBeFalse(); // default is false
+    });
   });
 
   // Test all state updater methods
@@ -264,6 +274,36 @@ describe('TodoStore', () => {
       store.startEditingTodo('todo-123', 'initial text');
       expect(store.editingTodoId()).toBe('todo-123');
       expect(store.editingTodoText()).toBe('initial text');
+    });
+
+    it('should toggle list manager visibility', () => {
+      const initialState = store.showListManager();
+      store.toggleListManager();
+      expect(store.showListManager()).toBe(!initialState);
+      store.toggleListManager();
+      expect(store.showListManager()).toBe(initialState);
+    });
+
+    it('should set list manager visibility explicitly', () => {
+      store.setShowListManager(false);
+      expect(store.showListManager()).toBeFalse();
+      store.setShowListManager(true);
+      expect(store.showListManager()).toBeTrue();
+    });
+
+    it('should toggle sharing manager visibility', () => {
+      const initialState = store.showSharingManager();
+      store.toggleSharingManager();
+      expect(store.showSharingManager()).toBe(!initialState);
+      store.toggleSharingManager();
+      expect(store.showSharingManager()).toBe(initialState);
+    });
+
+    it('should set sharing manager visibility explicitly', () => {
+      store.setShowSharingManager(false);
+      expect(store.showSharingManager()).toBeFalse();
+      store.setShowSharingManager(true);
+      expect(store.showSharingManager()).toBeTrue();
     });
   });
 

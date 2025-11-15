@@ -32,5 +32,7 @@
   "ownerAvatarAlt": "オーナーアバター",
   "collaboratorAvatarAlt": "コラボレーターアバター",
   "emailToShareWith": "共有先のメールアドレス",
-  "shareButton": "共有"
+  "shareButton": "共有",
+  "showLists": "リストを表示",
+  "hideLists": "リストを非表示"
 }

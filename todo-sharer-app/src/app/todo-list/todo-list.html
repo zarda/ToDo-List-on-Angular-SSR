@@ -14,8 +14,18 @@
         <mat-spinner diameter="40"></mat-spinner>
       </div>
     } @else if (store.lists().length > 0) {
-      <app-list-manager></app-list-manager>
+      @if (store.showListManager()) {
+        <app-list-manager></app-list-manager>
+      }
       @if (store.selectedList(); as list) {
+        @if (!store.showListManager()) {
+          <div class="list-header">
+            <button mat-stroked-button (click)="store.toggleListManager()" class="toggle-list-button">
+              <mat-icon>list</mat-icon> {{ 'showLists' | translate }}
+            </button>
+            <h2 class="current-list-name">{{ list.name }}</h2>
+          </div>
+        }
         <app-sharing-manager></app-sharing-manager>
         <mat-divider></mat-divider>
         <mat-card class="todo-list-card">

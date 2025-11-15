@@ -1,6 +1,24 @@
 @if (store.selectedList(); as list) {
   <div class="sharing-info">
-    <span class="sharing-label">{{ 'membersLabel' | translate }}</span>
+    <div class="sharing-header">
+      <button mat-button class="sharing-label-button" (click)="store.toggleSharingManager()">
+        <span class="sharing-label">{{ 'membersLabel' | translate }}</span>
+        <mat-icon class="toggle-icon">{{ store.showSharingManager() ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </button>
+      @if (!store.showSharingManager()) {
+        <div class="member-avatars">
+          @if (list.ownerPhotoURL) {
+            <img [src]="list.ownerPhotoURL" [alt]="'ownerAvatarAlt' | translate" class="avatar owner-avatar" />
+          } @else {
+            <mat-icon class="avatar owner-avatar">account_circle</mat-icon>
+          }
+          @for(collaborator of list.collaborators; track collaborator.uid) {
+            <img [src]="collaborator.photoURL || 'assets/default-avatar.png'" [alt]="'collaboratorAvatarAlt' | translate" class="avatar" />
+          }
+        </div>
+      }
+    </div>
+    @if (store.showSharingManager()) {
     <div class="member-chips">
       <mat-chip-set>
         <!-- Owner Chip -->
@@ -51,6 +69,7 @@
           <mat-icon>person_add</mat-icon> {{ 'shareButton' | translate }}
         </button>
       }
+    }
     }
   </div>
 }

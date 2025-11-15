@@ -32,5 +32,7 @@
   "ownerAvatarAlt": "Owner avatar",
   "collaboratorAvatarAlt": "Collaborator avatar",
   "emailToShareWith": "Email to share with",
-  "shareButton": "Share"
+  "shareButton": "Share",
+  "showLists": "Show Lists",
+  "hideLists": "Hide Lists"
 }

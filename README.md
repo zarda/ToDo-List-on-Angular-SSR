@@ -91,7 +91,7 @@ A modern web application that lets people create, manage, and **share** todo lis
 - ✅ Test coverage improved
 - ✅ Hybrid SSR/CSR rendering optimized
 - ✅ i18n support (Traditional Chinese, Japanese)
-- 📊 Version: Early release (0.5.18)
+- 📊 Version: Early release (0.6.19)
 
 ## User Permissions
 
@@ -145,7 +145,7 @@ Supports **English**, **Traditional Chinese (繁體中文)**, and **Japanese (�
 - **Runtime switching** using ngx-translate - instant language changes
 - **Browser detection** - automatically uses user's preferred language
 - **localStorage persistence** - remembers user's choice
-- **34 translated strings** across all UI components including sharing features
+- **36 translated strings** across all UI components including sharing features
 
 ---
 

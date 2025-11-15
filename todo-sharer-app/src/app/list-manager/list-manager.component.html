@@ -13,6 +13,9 @@
 
     @if (store.selectedListId() && !store.isEditingList() && !store.confirmingDeleteListId()) {
       <div class="list-actions">
+        <button mat-icon-button (click)="store.toggleListManager()" [matTooltip]="'hideLists' | translate">
+          <mat-icon>visibility_off</mat-icon>
+        </button>
         <button mat-icon-button (click)="store.startEditList()" [matTooltip]="'editListName' | translate">
           <mat-icon>edit</mat-icon>
         </button>

@@ -23,7 +23,7 @@ The application supports **runtime language switching** using **ngx-translate**:
 - **Traditional Chinese** (zh-Hant) - 繁體中文
 - **Japanese** (ja) - 日本語
 
-Translation files are located in `src/assets/i18n/` and contain **34 translated strings** covering all UI components including sharing features.
+Translation files are located in `src/assets/i18n/` and contain **36 translated strings** covering all UI components including sharing features.
 
 ### How it works
 

@@ -41,6 +41,8 @@ interface TodoState {
   confirmingDeleteListId: string | null;
   confirmingDeleteTodoId: string | null;
   confirmingClearCompleted: boolean;
+  showListManager: boolean;
+  showSharingManager: boolean;
 }
 
 @Injectable()
@@ -80,6 +82,8 @@ export class TodoStore {
     confirmingDeleteListId: null,
     confirmingDeleteTodoId: null,
     confirmingClearCompleted: false,
+    showListManager: true,
+    showSharingManager: false,
   });
 
   // Selectors
@@ -111,6 +115,8 @@ export class TodoStore {
   readonly confirmingDeleteListId = computed(() => this.state().confirmingDeleteListId);
   readonly confirmingDeleteTodoId = computed(() => this.state().confirmingDeleteTodoId);
   readonly confirmingClearCompleted = computed(() => this.state().confirmingClearCompleted);
+  readonly showListManager = computed(() => this.state().showListManager);
+  readonly showSharingManager = computed(() => this.state().showSharingManager);
 
   readonly selectedList = computed(() => {
     const listId = this.selectedListId();
@@ -185,6 +191,10 @@ export class TodoStore {
   readonly startEditingTodo = (todoId: string, initialText: string) => {
     this.state.update(s => ({ ...s, editingTodoId: todoId, editingTodoText: initialText }));
   };
+  readonly toggleListManager = () => this.state.update(s => ({ ...s, showListManager: !s.showListManager }));
+  readonly setShowListManager = (showListManager: boolean) => this.state.update(s => ({ ...s, showListManager }));
+  readonly toggleSharingManager = () => this.state.update(s => ({ ...s, showSharingManager: !s.showSharingManager }));
+  readonly setShowSharingManager = (showSharingManager: boolean) => this.state.update(s => ({ ...s, showSharingManager }));
 
   // Helper to manage loading states for async operations
   private async withLoading(

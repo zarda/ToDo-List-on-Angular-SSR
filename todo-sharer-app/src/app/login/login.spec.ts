@@ -159,7 +159,7 @@ describe('Login', () => {
     expect(authServiceMock.loginWithGoogle).toHaveBeenCalledTimes(1);
 
     // Second click should be ignored
-    component.login();
+    clickLoginButton();
     tick();
     expect(authServiceMock.loginWithGoogle).toHaveBeenCalledTimes(1);
   }));
