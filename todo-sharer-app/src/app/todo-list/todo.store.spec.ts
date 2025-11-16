@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { TodoStore } from './todo.store';
 import { TodoService } from '../services/todo.service';
 import { ListService } from '../services/list.service';
@@ -984,6 +984,56 @@ describe('TodoStore', () => {
         store.setHideCompleted(true);
         expect(store.isFiltered()).toBeTrue();
       });
+    });
+  });
+
+  // Test localStorage persistence helper methods
+  describe('Last Selected List Persistence', () => {
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    it('should save list ID to localStorage', () => {
+      store['saveLastSelectedListId']('user-123', 'list-456');
+      const saved = localStorage.getItem('lastSelectedList_user-123');
+      expect(saved).toBe('list-456');
+    });
+
+    it('should not save when user ID is undefined', () => {
+      store['saveLastSelectedListId'](undefined, 'list-456');
+      const keys = Object.keys(localStorage);
+      expect(keys.length).toBe(0);
+    });
+
+    it('should not save when list ID is null', () => {
+      store['saveLastSelectedListId']('user-123', null);
+      const keys = Object.keys(localStorage);
+      expect(keys.length).toBe(0);
+    });
+
+    it('should retrieve last selected list ID from localStorage', () => {
+      localStorage.setItem('lastSelectedList_user-123', 'list-789');
+      const retrieved = store['getLastSelectedListId']('user-123');
+      expect(retrieved).toBe('list-789');
+    });
+
+    it('should return null when no list ID is stored', () => {
+      const retrieved = store['getLastSelectedListId']('user-123');
+      expect(retrieved).toBeNull();
+    });
+
+    it('should return null when user ID is undefined', () => {
+      localStorage.setItem('lastSelectedList_user-123', 'list-789');
+      const retrieved = store['getLastSelectedListId'](undefined);
+      expect(retrieved).toBeNull();
+    });
+
+    it('should handle different users separately', () => {
+      store['saveLastSelectedListId']('user-1', 'list-a');
+      store['saveLastSelectedListId']('user-2', 'list-b');
+
+      expect(store['getLastSelectedListId']('user-1')).toBe('list-a');
+      expect(store['getLastSelectedListId']('user-2')).toBe('list-b');
     });
   });
 });

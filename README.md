@@ -91,7 +91,7 @@ A modern web application that lets people create, manage, and **share** todo lis
 - ✅ Test coverage improved
 - ✅ Hybrid SSR/CSR rendering optimized
 - ✅ i18n support (Traditional Chinese, Japanese)
-- 📊 Version: Early release (0.6.19)
+- 📊 Version: Early release (0.6.20)
 
 ## User Permissions
 

@@ -127,8 +127,9 @@ export class TodoStore {
   readonly filteredLists = computed(() => {
     const lists = this.lists();
     const term = this.listSearchTerm().toLowerCase();
-    if (!term) return lists;
-    return lists.filter(list => list.name.toLowerCase().includes(term));
+    const filtered = term ? lists.filter(list => list.name.toLowerCase().includes(term)) : lists;
+    // Sort alphabetically by list name (A-Z)
+    return filtered.sort((a, b) => a.name.localeCompare(b.name));
   });
 
   private readonly allTodos = computed(() => this.state().todos);
@@ -174,6 +175,15 @@ export class TodoStore {
     this.loadListsOnUserChange();
     this.loadTodosOnSelectionChange();
     this.handleAutoSelectList();
+    this.saveSelectedListOnChange();
+  }
+
+  private saveSelectedListOnChange(): void {
+    effect(() => {
+      const user = this.currentUser();
+      const selectedListId = this.selectedListId();
+      this.saveLastSelectedListId(user?.uid, selectedListId);
+    });
   }
 
   // --- State Updaters for UI bindings ---
@@ -270,16 +280,44 @@ export class TodoStore {
   private handleAutoSelectList(): void {
     effect(() => {
       // Trigger this effect when the user or the lists change.
-      this.currentUser();
+      const user = this.currentUser();
       const availableLists = this.lists();
       const currentSelection = this.selectedListId();
 
       if (availableLists.length === 0) {
         this.setSelectedListId(null);
       } else if (!currentSelection || !availableLists.find(l => l.id === currentSelection)) {
-        this.setSelectedListId(availableLists[0].id);
+        // Try to restore last selected list from localStorage
+        const lastSelectedListId = this.getLastSelectedListId(user?.uid);
+        const lastSelectedList = lastSelectedListId ? availableLists.find(l => l.id === lastSelectedListId) : null;
+
+        if (lastSelectedList) {
+          this.setSelectedListId(lastSelectedList.id);
+        } else {
+          this.setSelectedListId(availableLists[0].id);
+        }
       }
     });
+  }
+
+  private getLastSelectedListId(userId?: string): string | null {
+    if (!userId) return null;
+    try {
+      const key = `lastSelectedList_${userId}`;
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  private saveLastSelectedListId(userId: string | undefined, listId: string | null): void {
+    if (!userId || !listId) return;
+    try {
+      const key = `lastSelectedList_${userId}`;
+      localStorage.setItem(key, listId);
+    } catch {
+      // Ignore localStorage errors (e.g., in incognito mode)
+    }
   }
 
   async addTodo(): Promise<void> {
