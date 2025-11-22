@@ -34,5 +34,11 @@
   "userTodoLists": "{{name}}'s To-Do Lists",
   "welcomeMessage": "Create your first list to get started.",
   "welcomeTitle": "Welcome to your To-Do List!",
-  "whatNeedsToBeDone": "What needs to be done?"
+  "whatNeedsToBeDone": "What needs to be done?",
+  "loginPageWelcome": "Welcome",
+  "loginPageSubtitle": "Please login to continue",
+  "loginWithGoogle": "Login with Google",
+  "loginWithMicrosoft": "Login with Microsoft",
+  "googleLogoAlt": "Google logo",
+  "microsoftLogoAlt": "Microsoft logo"
 }

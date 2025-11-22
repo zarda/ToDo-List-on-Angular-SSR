@@ -34,5 +34,11 @@
   "userTodoLists": "{{name}} のタスクリスト",
   "welcomeMessage": "最初のリストを作成して始めましょう。",
   "welcomeTitle": "タスクリストへようこそ！",
-  "whatNeedsToBeDone": "何をする必要がありますか？"
+  "whatNeedsToBeDone": "何をする必要がありますか？",
+  "loginPageWelcome": "ようこそ",
+  "loginPageSubtitle": "続行するにはログインしてください",
+  "loginWithGoogle": "Google でログイン",
+  "loginWithMicrosoft": "Microsoft でログイン",
+  "googleLogoAlt": "Google ロゴ",
+  "microsoftLogoAlt": "Microsoft ロゴ"
 }

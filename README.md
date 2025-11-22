@@ -90,8 +90,8 @@ A modern web application that lets people create, manage, and **share** todo lis
 - ✅ Visual status indicators (overdue/due soon)
 - ✅ Test coverage improved
 - ✅ Hybrid SSR/CSR rendering optimized
-- ✅ i18n support (Traditional Chinese, Japanese)
-- 📊 Version: Early release (0.6.20)
+- ✅ i18n support (10 languages including login page)
+- 📊 Version: Early release (0.7.21)
 
 ## User Permissions
 
@@ -138,14 +138,30 @@ Each task contains:
 
 ## Internationalization (i18n)
 
-Supports **English**, **Traditional Chinese (繁體中文)**, and **Japanese (日本語)** with instant language switching via the globe icon in the navigation bar - no page reload required!
+Supports **10 languages** with instant language switching via the globe icon in the navigation bar - no page reload required!
+
+### Supported Languages
+
+| Language | Native Name | Code |
+|----------|-------------|------|
+| English | English | en |
+| Spanish | Español | es |
+| French | Français | fr |
+| German | Deutsch | de |
+| Italian | Italiano | it |
+| Portuguese | Português | pt |
+| Korean | 한국어 | ko |
+| Simplified Chinese | 简体中文 | zh-Hans |
+| Traditional Chinese | 繁體中文 | zh-Hant |
+| Japanese | 日本語 | ja |
 
 ### Key Features
 
 - **Runtime switching** using ngx-translate - instant language changes
 - **Browser detection** - automatically uses user's preferred language
 - **localStorage persistence** - remembers user's choice
-- **36 translated strings** across all UI components including sharing features
+- **44 translated strings** across all UI components including login page and sharing features
+- **Full login page localization** - welcome messages and authentication buttons in all languages
 
 ---
 

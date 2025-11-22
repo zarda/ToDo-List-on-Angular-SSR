@@ -34,5 +34,11 @@
   "userTodoLists": "{{name}} 的待辦事項清單",
   "welcomeMessage": "建立您的第一個清單以開始使用。",
   "welcomeTitle": "歡迎使用您的待辦事項清單！",
-  "whatNeedsToBeDone": "需要做什麼？"
+  "whatNeedsToBeDone": "需要做什麼？",
+  "loginPageWelcome": "歡迎",
+  "loginPageSubtitle": "請登入以繼續",
+  "loginWithGoogle": "使用 Google 登入",
+  "loginWithMicrosoft": "使用 Microsoft 登入",
+  "googleLogoAlt": "Google 標誌",
+  "microsoftLogoAlt": "Microsoft 標誌"
 }

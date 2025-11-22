@@ -15,6 +15,13 @@ export class LocaleService {
 
   private readonly locales: LocaleInfo[] = [
     { code: 'en', name: 'English', nativeName: 'English' },
+    { code: 'es', name: 'Spanish', nativeName: 'Español' },
+    { code: 'fr', name: 'French', nativeName: 'Français' },
+    { code: 'de', name: 'German', nativeName: 'Deutsch' },
+    { code: 'it', name: 'Italian', nativeName: 'Italiano' },
+    { code: 'pt', name: 'Portuguese', nativeName: 'Português' },
+    { code: 'ko', name: 'Korean', nativeName: '한국어' },
+    { code: 'zh-Hans', name: 'Simplified Chinese', nativeName: '简体中文' },
     { code: 'zh-Hant', name: 'Traditional Chinese', nativeName: '繁體中文' },
     { code: 'ja', name: 'Japanese', nativeName: '日本語' },
   ];

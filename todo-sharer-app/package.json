@@ -1,6 +1,6 @@
 {
   "name": "todo-sharer-app",
-  "version": "0.6.20",
+  "version": "0.7.21",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
