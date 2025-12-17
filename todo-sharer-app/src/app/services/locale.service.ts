@@ -1,4 +1,5 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 
 export interface LocaleInfo {
@@ -12,6 +13,8 @@ export interface LocaleInfo {
 })
 export class LocaleService {
   private translateService = inject(TranslateService);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   private readonly locales: LocaleInfo[] = [
     { code: 'en', name: 'English', nativeName: 'English' },
@@ -27,25 +30,27 @@ export class LocaleService {
   ];
 
   constructor() {
-    // Initialize the translation service with stored preference or browser language
-    const storedLocale = this.getStoredLocalePreference();
-    const browserLang = this.translateService.getBrowserLang();
-
     // Determine initial language
     let initialLang = 'en';
-    if (storedLocale && this.locales.some(l => l.code === storedLocale)) {
-      initialLang = storedLocale;
-    } else if (browserLang && this.locales.some(l => l.code === browserLang)) {
-      initialLang = browserLang;
-    }
 
-    // Set the default language and use it
-    this.translateService.setDefaultLang('en');
+    if (this.isBrowser) {
+      // Browser: check stored preference or browser language
+      const storedLocale = this.getStoredLocalePreference();
+      const browserLang = this.translateService.getBrowserLang();
+
+      if (storedLocale && this.locales.some(l => l.code === storedLocale)) {
+        initialLang = storedLocale;
+      } else if (browserLang && this.locales.some(l => l.code === browserLang)) {
+        initialLang = browserLang;
+      }
+    }
+    // Server: always use default 'en' (translations loaded via TransferState)
+
     this.translateService.use(initialLang);
   }
 
   getCurrentLocale(): string {
-    return this.translateService.currentLang || this.translateService.defaultLang || 'en';
+    return this.translateService.currentLang || 'en';
   }
 
   getAvailableLocales(): LocaleInfo[] {
@@ -66,17 +71,19 @@ export class LocaleService {
   }
 
   private storeLocalePreference(localeCode: string): void {
+    if (!this.isBrowser) return;
     try {
       localStorage.setItem('preferredLocale', localeCode);
-    } catch (e) {
+    } catch {
       // LocalStorage might not be available
     }
   }
 
   getStoredLocalePreference(): string | null {
+    if (!this.isBrowser) return null;
     try {
       return localStorage.getItem('preferredLocale');
-    } catch (e) {
+    } catch {
       return null;
     }
   }
